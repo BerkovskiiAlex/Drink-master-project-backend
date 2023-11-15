@@ -28,3 +28,11 @@
    }
 
 4. https://drink-master-project.onrender.com/api/auth/users/logout - запрост .post с вашим токеном в авторизации, ответ - успешный 204 статус без тела ответа
+
+5. https://drink-master-project.onrender.com/api/auth/users/current - запрост .get с вашим токеном в авторизации и почтой, ответ - успешный 200 статус с телом
+   {
+   "email": "Fedia@gmail.com",
+   "subscription": "starter"
+   }
+
+6. https://drink-master-project.onrender.com/api/auth/users/update - запрост .patch с вашим токеном в авторизации новым username, ответ - успешный 200 статус с новым расположением аватарки и username

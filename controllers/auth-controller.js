@@ -113,7 +113,7 @@ const updateAvatarUser = async (req, res) => {
     throw HttpError(404, `User with id=${_id} not found`);
   }
 
-  res.json({ avatarUrl: result.avatarUrl });
+  res.json({ avatarUrl: result.avatarUrl, username: result.username });
 };
 
 export default {
