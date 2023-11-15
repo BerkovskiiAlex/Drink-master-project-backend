@@ -4,10 +4,7 @@ import express from "express";
 
 import { validateBody } from "../../decorators/index.js";
 
-import {
-  userSignupSchema,
-  userSigninSchema,
- } from "../../models/User.js";
+import { userSignupSchema, userSigninSchema } from "../../models/User.js";
 
 import authController from "../../controllers/auth-controller.js";
 
@@ -28,7 +25,7 @@ authRouter.post(
   authController.login
 );
 
-// authRouter.get("/users/current", authenticate, authController.getCurrent);
+authRouter.get("/users/current", authenticate, authController.getCurrent);
 
 authRouter.post("/users/logout", authenticate, authController.logout);
 

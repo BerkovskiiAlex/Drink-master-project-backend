@@ -34,6 +34,10 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    birthData: {
+      type: String,
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true }
 );
