@@ -31,8 +31,8 @@
 
 5. https://drink-master-project.onrender.com/api/auth/users/current - запрост .get с вашим токеном в авторизации и почтой, ответ - успешный 200 статус с телом
    {
-   "email": "Fedia@gmail.com",
-   "subscription": "starter"
+   "email": "",
+   "subscription": ""
    }
 
-6. https://drink-master-project.onrender.com/api/auth/users/update - запрост .patch с вашим токеном в авторизации новым username, ответ - успешный 200 статус с новым расположением аватарки и username
+6. https://drink-master-project.onrender.com/api/auth/users/update - запрос .patch с вашим токеном в авторизации новым username и файлом аватарки в формате form-data, ответ - успешный 200 статус с новым расположением аватарки и username
