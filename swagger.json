@@ -1,0 +1,507 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Swagger test",
+    "description": "Showing off swagger-ui-express",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "http://localhost:3000" }, {"url": "https://drink-master-project.onrender.com/api/"}],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "Users endpoints"
+    },
+    {
+      "name": "Filters",
+      "description": "Filter`s endpoints"
+    },
+    {
+      "name": "Drink",
+      "description": "Drink`s endpoints"
+    }
+  ],
+  "paths": {
+    "/filters/glasses": {
+      "get": {
+        "tags": ["Filters"],
+        "summary": "Getting a list of containers for serving",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання списку тари для сервірування напоїв",
+            "content": {
+              "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/filterGlassesResponse"
+              }
+            }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/filters/categories": {
+      "get": {
+        "tags": ["Filters"],
+        "summary": "Getting a list of cocktail categories",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання списку категорій коктейлів, відсортованих за алфавітом",
+            "content": {
+              "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/filterCategoriesResponse"
+              }
+            }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/filters/ingredients": {
+      "get": {
+         "tags": ["Filters"],
+         "summary": "Getting the ingredient list.",
+         "security": [{ "Bearer": [] }],
+         "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання списку інгредієнтів",
+            "content": {
+              "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/filterIngredientsResponse"
+              }
+            }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+
+    },
+    "/auth/users/subscribe":{
+      "post": {
+        "tags": ["Users"],
+        "summary": "Subscribing to Messaging.",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Ендпоінт для надсилання листа підписникам з повідомленням про підписку на розсилку",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userSubscribeSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/users/update":{
+      "patch": {
+        "tags": ["Users"],
+        "summary": "User Updates.",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Ендпоінт для оновлення інформації про користувача або одного з полів контактної інформації",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userUpdateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/users/current": {
+      "get":{
+        "tags": ["Users"],
+        "summary": "User Information. Ендпоінт для отримання інформації про користувача за допомогою ідентифікатора або унікальної інформації",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation \nПри переході URL /users/current ви отримуєте певну доступну інформацію. На данний момент це: email, subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userCurrentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign up new user - User registration",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "# Опис параметрів запиту: **username** - string, ім'я користувача. **email** - string, електронна пошта користувача. **password** - string, зашифрований пароль користувача.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userSignupSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation. New User Registered. Опис параметрів відповіді: **username** - string, ім'я користувача. **email** - string, електронна пошта користувача.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userSignupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Provided email already exists",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/users/login": {
+        "post": {
+        "tags": ["Auth"],
+        "summary": "Sign in existing user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Опис параметрів запиту: **email** - string, електронна пошта користувача. **Обов'язковий параметр**. **password** - string, зашифрований пароль користувача. **Обов'язковий параметр**",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userSigninSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation. **token** - string, токен використовується для зберігання стану авторизації користувача в системі, що дозволяє користувачам здійснювати захищені запити до API. Токен є довільним рядком символів і генерується при кожній новій авторизації користувача. (**subscription** - string, заменить на age (adult|!adult))",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userSigninResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden. (Provided password is incorrect)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found. (User with such email not found)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/users/logout": {
+         "post": {
+        "tags": ["Auth"],
+        "summary": "Signs out user",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "204": {
+            "description": "User signed out - успішний вихід з системи. \n\nЕндпоінт логауту - це механізм виходу з системи, який припиняє дію сесії користувача та знищує токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /auth/users/logout з валідним токеном у заголовку. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.\n",
+            "content": {}
+          },
+          "401": {
+            "description": "Bearer auth failed - невалідний токен - Якщо запит не містить дійсний токен або токен вже вичерпав свій термін дії, сервер поверне відповідь з кодом статусу HTTP 401 Unauthorized.",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "userSignupSchema": {
+        "type": "object",
+        "required": [ "username","email", "password"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "Johny"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "user213@gmail.com",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password min 6 values",
+            "example": "123456"
+          }
+        }
+      },
+      "userSignupResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "description": "User name"
+            },
+            "email": {
+              "type": "string",
+              "description": "User email",
+              "format": "email"
+            }
+          }
+        },
+        "example": [
+          { "email": "1@gmail.com", "username": "Johny" },
+          { "email": "2@gmail.com", "username": "David" }
+        ]
+      },
+      "userSigninSchema": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password min 6 values",
+            "example": "123456"
+          }
+        }
+      },
+      "userSigninResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "User token"
+            },
+            "email": {
+              "type": "string",
+              "description": "User email",
+              "format": "email"
+            },
+            "subscription": {
+                "type": "string",
+                "description": "User status (starter | pro | business)"
+            }
+          }
+        },
+        "example": [
+          { "token": "asf2d@!fS", "email": "asd@mail.com", "subscription": "starter"}
+        ]
+      },
+      "userCurrentResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User email",
+              "format": "email"
+            },
+            "subscription": {
+                "type": "string",
+                "description": "User status (starter | pro | business)",
+                "example": "starter"
+            }
+          }
+        }
+      },
+      "userUpdateSchema": {
+        "type":"object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User email",
+              "format": "email"
+            },
+            "subscription": {
+                "type": "string",
+                "description": "User status (starter | pro | business)",
+                "example": "business"
+            }
+          }
+      },
+      "userUpdateResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email updated",
+              "format": "email"
+            },
+            "subscription": {
+              "type": "string",
+              "description": "User status updated",
+              "example": "business"
+            }
+          }
+        }
+      },
+      "userSubscribeSchema": {
+        "type":"object",
+        "properties": {
+          "email": {
+              "type": "string",
+              "description": "User email who want subscribing to messaging",
+              "format": "email"
+            }
+        }
+      },
+      "filterIngredientsResponse": {
+      "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "that value required for add that ingredients",
+              "example": "SeXoNtheBech"
+            },
+            "abv":{
+            "type": "number",
+            "description": "default: 0| Alcohol by volume"
+          },
+          "alcohol":{
+            "type": "string",
+            "description": "default: No",
+            "example": "Yes"
+          },
+          "description":{
+            "type": "string",
+            "description": "default: None"
+          },
+          "type":{
+            "type": "string",
+            "description": "default: No",
+            "example": "low alcohol | whiskey | Rum"
+          },
+          "flavour":{
+            "type": "string",
+            "description": "default: None",
+            "example": "mild taste | strong taste"
+          },
+          "country":{
+            "type": "string",
+            "description": "default: None",
+            "example": "Italy"
+          }
+          }
+        }
+    },
+    "filterCategoriesResponse": {
+      "type":"array",
+      "description": "Ordinary Drink, Cocktail, Shake, Other/Unknown",
+      "items": {
+        "type":"array",
+        "example": "Ordinary Drink"
+      }
+    },
+    "filterGlassesResponse": {
+      "type":"array",
+      "description": "Highball glass, Cocktail glass,Old-fashioned glass, Whiskey Glass",
+      "items": {
+        "type":"array",
+        "example": "Highball glass"
+      }
+    }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
