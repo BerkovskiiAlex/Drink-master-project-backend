@@ -44,6 +44,6 @@ export const ingredientAddSchema = Joi.object({});
 
 export const ingredientUpdateSchema = Joi.object({});
 
-const Ingredient = model("ingredients", ingredientSchema);
+const Ingredient = model("ingredient", ingredientSchema);
 
 export default Ingredient;
