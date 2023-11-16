@@ -1,54 +1,20 @@
 /** @format */
 
-// /** @format */
-// /** @format */
+/** @format */
+/** @format */
 
-// import express from "express";
+import express from "express";
 
-// import { validateBody } from "../../decorators/index.js";
+import { validateBody } from "../../decorators/index.js";
 
-// import {
-//   userSignupSchema,
-//   userSigninSchema,
-//   userEmailSchema,
-// } from "../../models/User.js";
+import {} from "../../models/Ingredient.js";
 
-// import authController from "../../controllers/auth-controller.js";
+import ingredientController from "../../controllers/ingredients-controller.js";
 
-// import { authenticate, upload } from "../../middlewares/index.js";
+import { authenticate } from "../../middlewares/index.js";
 
-// const authRouter = express.Router();
+const ingredientRouter = express.Router();
 
-// authRouter.post(
-//   "/users/register",
-//   upload.single("avatar"),
-//   validateBody(userSignupSchema),
-//   authController.signup
-// );
+ingredientRouter.get("/ingredients", authenticate, ingredientController.getAll);
 
-// authRouter.get("/verify/:verificationCode", authController.verify);
-
-// authRouter.post(
-//   "/users/verify",
-//   validateBody(userEmailSchema),
-//   authController.resendVerifyEmail
-// );
-
-// authRouter.post(
-//   "/users/login",
-//   validateBody(userSigninSchema),
-//   authController.login
-// );
-
-// authRouter.get("/users/current", authenticate, authController.getCurrent);
-
-// authRouter.post("/users/logout", authenticate, authController.logout);
-
-// authRouter.patch(
-//   "/users/avatars",
-//   authenticate,
-//   upload.single("avatar"),
-//   authController.updateAvatarUser
-// );
-
-// export default authRouter;
+export default ingredientRouter;
