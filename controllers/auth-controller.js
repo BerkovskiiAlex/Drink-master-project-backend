@@ -8,7 +8,7 @@ import gravatar from "gravatar";
 
 import User from "../models/User.js";
 
-import { HttpError } from "../helpers/index.js";
+import { HttpError, isUserAdult } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -17,7 +17,12 @@ const { JWT_SECRET } = process.env;
 const avatarsPath = path.resolve("public", "avatars");
 
 const signup = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, birthdate } = req.body;
+
+  if (!birthdate) {
+    throw HttpError(400, "Birthdate is required");
+  }
+
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email already in use");
@@ -45,6 +50,7 @@ const signup = async (req, res) => {
     ...req.body,
     avatarUrl,
     password: hashPassword,
+    birthdate,
   });
 
   res.status(201).json({
@@ -62,21 +68,27 @@ const login = async (req, res) => {
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
+
   if (!passwordCompare) {
     throw HttpError(401, "Email or password invalid");
   }
+
+  const isAdult = isUserAdult(user.birthdate);
 
   const payload = {
     id: user._id,
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  await User.findByIdAndUpdate(user._id, { token });
+  await User.findByIdAndUpdate(user._id, {
+    $set: { token: token, isAdult: isAdult },
+  });
 
   res.json({
     token,
     email: user.email,
     subscription: user.subscription,
+    isAdult: isAdult,
   });
 };
 
@@ -113,7 +125,7 @@ const updateAvatarUser = async (req, res) => {
     throw HttpError(404, `User with id=${_id} not found`);
   }
 
-  res.json({ avatarUrl: result.avatarUrl });
+  res.json({ avatarUrl: result.avatarUrl, username: result.username });
 };
 
 export default {

@@ -34,10 +34,8 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    birthData: {
-      type: String,
-      required: true,
-    },
+    birthdate: { type: String, required: true },
+    isAdult: { type: Boolean, default: false },
   },
   { versionKey: false, timestamps: true }
 );
@@ -48,10 +46,15 @@ userSchema.pre("findOneAndUpdate", preUpdate);
 
 userSchema.post("findOneAndUpdate", handleSaveError);
 
+userSchema.pre("findByIdAndUpdate", preUpdate);
+
+userSchema.post("findByIdAndUpdate", handleSaveError);
+
 export const userSignupSchema = Joi.object({
   username: Joi.string().required(),
   email: Joi.string().pattern(emailRegexp).required(),
   password: Joi.string().min(6).required(),
+  birthdate: Joi.date().iso().required(),
 });
 
 export const userSigninSchema = Joi.object({
