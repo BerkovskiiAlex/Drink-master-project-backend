@@ -62,6 +62,11 @@ export const userSigninSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+export const userUpdateSchema = Joi.object({
+  username: Joi.string(),
+  avatar: Joi.any().meta({ swaggerType: "file" }),
+}).unknown(false);
+
 const User = model("user", userSchema);
 
 export default User;

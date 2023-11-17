@@ -7,26 +7,9 @@ import { handleSaveError, preUpdate } from "./hooks.js";
 
 const drinkSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Set name for contact"],
-    },
-    email: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    favorite: {
-      type: Boolean,
-      default: false,
-    },
-    avatarUrl: { type: String },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
-    },
+    drink: { type: String },
+    glass: { type: String },
+    alcoholic: { type: String },
   },
   { versionKey: false, timestamps: true }
 );
