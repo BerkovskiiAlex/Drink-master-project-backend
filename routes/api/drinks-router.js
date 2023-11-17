@@ -10,4 +10,18 @@ const drinksRouter = express.Router();
 
 drinksRouter.get("/mainpage", authenticate, drinksController.getMainPageDrinks);
 
+drinksRouter.post(
+  "/popular/own/add",
+  authenticate,
+  drinksController.addToFavorites
+);
+
+drinksRouter.delete(
+  "/popular/own/remove",
+  authenticate,
+  drinksController.removeFromFavorites
+);
+
+drinksRouter.get("/popular", authenticate, drinksController.getPopularDrinks);
+
 export default drinksRouter;

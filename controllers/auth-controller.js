@@ -56,6 +56,7 @@ const signup = async (req, res) => {
   res.status(201).json({
     username: newUser.username,
     email: newUser.email,
+    avatarUrl: newUser.avatarUrl,
   });
 };
 
@@ -86,18 +87,22 @@ const login = async (req, res) => {
 
   res.json({
     token,
+    username: user.username,
     email: user.email,
-    subscription: user.subscription,
     isAdult: isAdult,
+    avatarUrl: user.avatarUrl,
   });
 };
 
 const getCurrent = async (req, res) => {
-  const { subscription, email } = req.user;
+  const { user } = req;
 
   res.json({
-    email,
-    subscription,
+    token: user.token,
+    username: user.username,
+    email: user.email,
+    isAdult: user.isAdult,
+    avatarUrl: user.avatarUrl,
   });
 };
 
