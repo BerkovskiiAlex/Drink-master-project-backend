@@ -51,7 +51,7 @@ const addToFavorites = async (req, res) => {
 
   await favoriteDrink.save();
 
-  res.json({ message: "Drink has been added to favorites" });
+  res.status(201).json({ message: "Drink has been added to favorites" });
 };
 
 const removeFromFavorites = async (req, res) => {
@@ -64,7 +64,7 @@ const removeFromFavorites = async (req, res) => {
 
   await Favorite.deleteOne({ userId, drinkId });
 
-  res.json({ message: "Drink has been removed from favorites" });
+  res.sendStatus(204);
 };
 
 const getPopularDrinks = async (req, res) => {
