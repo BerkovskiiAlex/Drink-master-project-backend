@@ -31,6 +31,70 @@ const getMainPageDrinks = async (req, res) => {
   res.json(result);
 };
 
+const getPopularDrinks = async (req, res) => {
+  const { isAdult = false } = req.user;
+  const { top = 10 } = req.query;
+
+  const topNum = parseInt(top);
+
+  const popularDrinkIds = await Favorite.aggregate([
+    { $group: { _id: "$drinkId", count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: topNum },
+  ]);
+
+  const popularDrinks = [];
+
+  for (let i = 0; i < popularDrinkIds.length; i++) {
+    const drinkDetails = await Drink.findById(popularDrinkIds[i]._id);
+    console.log(drinkDetails.alcoholic);
+    if (!isAdult && drinkDetails.alcoholic === "Alcoholic") {
+      continue;
+    }
+    popularDrinks.push(drinkDetails);
+  }
+
+  res.json(popularDrinks);
+};
+
+const getFilteredDrinks = async (req, res) => {
+  const { page = 1, limit = 10, category, keyword, ingredientId } = req.query;
+  const skip = (page - 1) * limit;
+
+  const { isAdult = false } = req.user;
+
+  const drinksCondition = {
+    ...(!isAdult && { alcoholic: "Non alcoholic" }),
+    ...(category && { category }),
+    ...(keyword && {
+      $or: [
+        { drink: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+      ],
+    }),
+    ...(ingredientId && { "ingredients.ingredientId": ingredientId }),
+  };
+
+  const result = await Drink.find(drinksCondition, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  });
+
+  res.json(result);
+};
+
+const getDrinkById = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await Drink.findById(id);
+
+  if (!result) {
+    throw HttpError(404, `Drink with id=${id} not found`);
+  }
+
+  res.json(result);
+};
+
 const addToFavorites = async (req, res) => {
   const userId = req.user._id;
   const drinkId = req.body.drinkId;
@@ -67,30 +131,18 @@ const removeFromFavorites = async (req, res) => {
   res.sendStatus(204);
 };
 
-const getPopularDrinks = async (req, res) => {
-  const { isAdult = false } = req.user;
-  const { top = 10 } = req.query;
+const getFavoriteDrinks = async (req, res) => {
+  const userId = req.user._id;
 
-  const topNum = parseInt(top);
+  const favorites = await Favorite.find({ userId });
 
-  const popularDrinkIds = await Favorite.aggregate([
-    { $group: { _id: "$drinkId", count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: topNum },
-  ]);
+  const favoriteDrinkIds = favorites.map((fav) => fav.drinkId);
+  console.log(favoriteDrinkIds);
+  const favoriteDrinks = await Drink.find({
+    _id: { $in: favoriteDrinkIds },
+  });
 
-  const popularDrinks = [];
-
-  for (let i = 0; i < popularDrinkIds.length; i++) {
-    const drinkDetails = await Drink.findById(popularDrinkIds[i]._id);
-    console.log(drinkDetails.alcoholic);
-    if (!isAdult && drinkDetails.alcoholic === "Alcoholic") {
-      continue;
-    }
-    popularDrinks.push(drinkDetails);
-  }
-
-  res.json(popularDrinks);
+  res.json(favoriteDrinks);
 };
 
 export default {
@@ -98,4 +150,7 @@ export default {
   addToFavorites: ctrlWrapper(addToFavorites),
   removeFromFavorites: ctrlWrapper(removeFromFavorites),
   getPopularDrinks: ctrlWrapper(getPopularDrinks),
+  getFilteredDrinks: ctrlWrapper(getFilteredDrinks),
+  getDrinkById: ctrlWrapper(getDrinkById),
+  getFavoriteDrinks: ctrlWrapper(getFavoriteDrinks),
 };

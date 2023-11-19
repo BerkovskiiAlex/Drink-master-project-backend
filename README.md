@@ -55,9 +55,21 @@
 
 11. https://drink-master-project.onrender.com/api/drinks/popular?top=2 - запрос .get с вашим токеном в авторизации и возможностью выбора количества наипопулярнейших коктейлей, ответ - успешный 200 статус со списком коктейлей перечисленных по убыванию и в зависимости от совершеннолетия позьзователя
 
-12. https://drink-master-project.onrender.com/api/drinks/popular/own/add - запрос .post с вашим токеном в авторизации и "drinkId": "..." в теле запроса, ответ - успешный 201 статус с телом
+12. https://drink-master-project.onrender.com/api/drinks/favorite/add - запрос .post с вашим токеном в авторизации и "drinkId": "..." в теле запроса, ответ - успешный 201 статус с телом
     {
     "message": "Drink has been added to favorites"
     }
 
-13. https://drink-master-project.onrender.com/api/drinks/popular/own/remove - запрос .delete с вашим токеном в авторизации и "drinkId": "..." в теле запроса, ответ - успешный 204 статус
+13. https://drink-master-project.onrender.com/api/drinks/favorite/remove - запрос .delete с вашим токеном в авторизации и "drinkId": "..." в теле запроса, ответ - успешный 204 статус
+
+14. https://drink-master-project.onrender.com/api/drinks/search?page=1&limit=5&category=Shake&keyword=Just a Moonmint&ingredientId=64aebb7f82d96cc69e0eb4d7 - запрос .get с вашим токеном в авторизации и параметрами запроса в виде: {
+    page
+    limit
+    category
+    keyword -------- это ключевое слово в названии коктейля (drink) или в его описании (description)
+    ingredientId ------------ это айди ингридиента
+    }, ответ - успешный 200 статус с коктейлями, удовлетворяющими параметры запроса. Параметры запроса не обязательны для заполнения, если их не будет то ответ будет дефолтным - это 10 коктейлей в ответе с учётом совершеннолетия пользователя
+
+15. https://drink-master-project.onrender.com/api/drinks/favorite - запрос .get с вашим токеном, ответ - успешный 200 статус с коктейлем.
+
+16. https://drink-master-project.onrender.com/api/drinks/639b6de9ff77d221f190c563 - запрос .get с айди коктейля в параметрах вызова, ответ - успешный 200 статус с коктейлем. Индентификация пользователя не производится.
