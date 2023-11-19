@@ -15,7 +15,7 @@ const getMainPageDrinks = async (req, res) => {
   const { page = 1, limit = 10, category } = req.query;
 
   if (!category) {
-    throw HttpError(404, `category required`);
+    throw HttpError(400, `category required`);
   }
 
   const skip = (page - 1) * limit;
