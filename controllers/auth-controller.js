@@ -23,6 +23,13 @@ const signup = async (req, res) => {
     throw HttpError(400, "Birthdate is required");
   }
 
+  const userBirthdate = new Date(birthdate);
+  const currentDate = new Date();
+
+  if (currentDate < userBirthdate) {
+    throw HttpError(400, "Incorrect date");
+  }
+
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email already in use");
