@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "title": "Swagger test",
     "description": "Showing off swagger-ui-express",
     "license": {
@@ -31,6 +31,192 @@
     }
   ],
   "paths": {
+    "/drinks/favorite/remove": {
+      "delete": {
+        "tags": ["Drink"],
+        "summary": "Removing a cocktail from favorites",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "201": {
+            "description": "Successfull operation. Видалення коктейлю з обраних.",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request. (drinkId required)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/favorite/add": {
+      "post": {
+        "tags": ["Drink"],
+        "summary": "Adding a cocktail to favorites",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "201": {
+            "description": "The request succeeded. Додавання коктейлю до обраних.",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request. (drinkId required)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own/remove": {
+      "delete": {
+        "tags": ["Drink"],
+        "summary": "Removing your own cocktail",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "201": {
+            "description": "The request succeeded. Видалення власного коктейлю.",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request. (drinkId required)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own/add": {
+      "post": {
+        "tags": ["Drink"],
+        "summary": "Adding your own cocktail",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "201": {
+            "description": "The request succeeded. Додавання власного коктейлю. У разі, якщо користувачеві немає 18 років, коктейль має бути лише безалкогольним.",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request. (drinkId required)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "Getting your own cocktails",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання власних коктейлів.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/:id": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "Getting one cocktail by ID",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання одного коктейлю за його ідентифікатором.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+      "/drinks/favorite": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "Getting cocktails from favorites",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання коктейлів, доданих користувачем в обрані.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/search": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "Getting Cocktails by Category + Ingredient + Keyword",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання коктейлів обраної категорії + інгредієнта + ключового слова з пагінацією та динамічною кількістю коктейлів на сторінці. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/popular": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "Getting popular cocktails",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання популярних коктейлів на основі кількості додавань до обраних користувачами. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/mainpage": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "Getting cocktails for the homepage",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation. Отримання коктейлів по категоріям для відображення на головній сторінці. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          }
+        }
+      }
+    },
     "/filters/glasses": {
       "get": {
         "tags": ["Filters"],
