@@ -103,10 +103,10 @@ const getDrinkById = async (req, res) => {
 };
 
 const addDrink = async (req, res) => {
-  const { _id: owner } = req.user;
+  const { _id: owner, isAdult } = req.user;
 
   if (!req.file) {
-    return res.status(400).json({ message: "drinkPhoto required" });
+    throw HttpError(400, `drinkPhoto required`);
   }
 
   const { path: oldPath, filename } = req.file;
@@ -115,6 +115,13 @@ const addDrink = async (req, res) => {
   const drinkUrl = path.join("drinkPhoto", filename);
 
   const drinkData = JSON.parse(req.body.data);
+
+  if (!isAdult && drinkData.alcoholic === "Yes") {
+    throw HttpError(
+      403,
+      `A minor user is prohibited from adding alcoholic drinks`
+    );
+  }
 
   const result = await Drink.create({
     ...drinkData,
