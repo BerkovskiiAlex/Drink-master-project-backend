@@ -4,8 +4,8 @@ import Joi from "joi";
 
 const categorySchema = new Schema(
   {
-    categories: {
-      type: Array,
+    category: {
+      type: String,
     },
   },
   { versionKey: false, timestamps: true }

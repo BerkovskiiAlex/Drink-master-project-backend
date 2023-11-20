@@ -4,8 +4,8 @@ import Joi from "joi";
 
 const glassSchema = new Schema(
   {
-    glasses: {
-      type: Array,
+    glass: {
+      type: String,
     },
   },
   { versionKey: false, timestamps: true }
