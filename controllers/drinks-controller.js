@@ -2,7 +2,6 @@
 
 import fs from "fs/promises";
 import path from "path";
-import gravatar from "gravatar";
 
 import Drink from "../models/Drink.js";
 import Favorite from "../models/Favorite.js";
@@ -10,6 +9,8 @@ import Favorite from "../models/Favorite.js";
 import { HttpError } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
+
+const drinksPath = path.resolve("public", "drinkPhoto");
 
 const getMainPageDrinks = async (req, res) => {
   const { page = 1, limit = 10, category } = req.query;
@@ -101,6 +102,59 @@ const getDrinkById = async (req, res) => {
   res.json(result);
 };
 
+const addDrink = async (req, res) => {
+  const { _id: owner } = req.user;
+
+  if (!req.file) {
+    return res.status(400).json({ message: "drinkPhoto required" });
+  }
+
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(drinksPath, filename);
+  await fs.rename(oldPath, newPath);
+  const drinkUrl = path.join("drinkPhoto", filename);
+
+  const drinkData = JSON.parse(req.body.data);
+
+  const result = await Drink.create({
+    ...drinkData,
+    drinkThumb: drinkUrl,
+    owner,
+  });
+  res.status(201).json(result);
+};
+
+const removeDrink = async (req, res) => {
+  const { _id: owner } = req.user;
+  const { id } = req.body;
+
+  const drink = await Drink.findById(id);
+
+  if (!drink) {
+    throw HttpError(404, `Drink with id=${id} not found`);
+  }
+
+  if (String(drink.owner) !== String(owner)) {
+    throw HttpError(403, `You do not have permission to delete this drink`);
+  }
+
+  await Drink.findByIdAndDelete(id);
+
+  res.sendStatus(204);
+};
+
+const getUsersDrinks = async (req, res) => {
+  const { _id: owner } = req.user;
+
+  const result = await Drink.find({ owner });
+
+  if (!result) {
+    throw HttpError(404, `User's drinks not found`);
+  }
+
+  res.json(result);
+};
+
 const addToFavorites = async (req, res) => {
   const userId = req.user._id;
   const drinkId = req.body.drinkId;
@@ -153,10 +207,13 @@ const getFavoriteDrinks = async (req, res) => {
 
 export default {
   getMainPageDrinks: ctrlWrapper(getMainPageDrinks),
-  addToFavorites: ctrlWrapper(addToFavorites),
-  removeFromFavorites: ctrlWrapper(removeFromFavorites),
   getPopularDrinks: ctrlWrapper(getPopularDrinks),
   getFilteredDrinks: ctrlWrapper(getFilteredDrinks),
   getDrinkById: ctrlWrapper(getDrinkById),
+  addDrink: ctrlWrapper(addDrink),
+  removeDrink: ctrlWrapper(removeDrink),
+  getUsersDrinks: ctrlWrapper(getUsersDrinks),
+  addToFavorites: ctrlWrapper(addToFavorites),
+  removeFromFavorites: ctrlWrapper(removeFromFavorites),
   getFavoriteDrinks: ctrlWrapper(getFavoriteDrinks),
 };

@@ -4,7 +4,9 @@ import express from "express";
 
 import drinksController from "../../controllers/drinks-controller.js";
 
-import { authenticate } from "../../middlewares/index.js";
+import { authenticate, upload } from "../../middlewares/index.js";
+
+import { validateBody } from "../../decorators/index.js";
 
 const drinksRouter = express.Router();
 
@@ -13,6 +15,17 @@ drinksRouter.get("/mainpage", authenticate, drinksController.getMainPageDrinks);
 drinksRouter.get("/popular", authenticate, drinksController.getPopularDrinks);
 
 drinksRouter.get("/search", authenticate, drinksController.getFilteredDrinks);
+
+drinksRouter.post(
+  "/own/add",
+  upload.single("drinkPhoto"),
+  authenticate,
+  drinksController.addDrink
+);
+
+drinksRouter.delete("/own/remove", authenticate, drinksController.removeDrink);
+
+drinksRouter.get("/own", authenticate, drinksController.getUsersDrinks);
 
 drinksRouter.post(
   "/favorite/add",
