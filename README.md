@@ -81,6 +81,7 @@
     "description": "...",
     "instructions": "...",
     "glass": "один из видов стаканов",
+    "alcoholic": "Non alcoholic", -------- или "Yes"
     "ingredients": [
     {
     "title": "название индигридиента",
