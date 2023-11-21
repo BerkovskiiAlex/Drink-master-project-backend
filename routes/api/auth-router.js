@@ -38,7 +38,7 @@ authRouter.patch(
   authenticate,
   upload.single("avatar"),
   validateBody(userUpdateSchema),
-  authController.updateAvatarUser
+  authController.updateUser
 );
 
 export default authRouter;

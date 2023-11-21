@@ -120,19 +120,24 @@ const logout = async (req, res) => {
   res.sendStatus(204);
 };
 
-const updateAvatarUser = async (req, res) => {
+const updateUser = async (req, res) => {
   const { _id } = req.user;
-  if (!req.file) {
-    throw HttpError(400, `File required`);
+
+  let updatedUser;
+
+  if (req.file) {
+    const { path: oldPath, filename } = req.file;
+
+    const newPath = path.join(avatarsPath, filename);
+    await fs.rename(oldPath, newPath);
+    const avatarUrl = path.join("avatars", filename);
+
+    updatedUser = { ...req.body, avatarUrl };
+  } else {
+    updatedUser = { ...req.body };
   }
-  const { path: oldPath, filename } = req.file;
 
-  const newPath = path.join(avatarsPath, filename);
-  await fs.rename(oldPath, newPath);
-  const avatarUrl = path.join("avatars", filename);
-
-  const updatedUser = { ...req.body, avatarUrl };
-  const result = await User.findByIdAndUpdate(_id, updatedUser);
+  const result = await User.findByIdAndUpdate(_id, updatedUser, { new: true });
   if (!result) {
     throw HttpError(404, `User with id=${_id} not found`);
   }
@@ -145,5 +150,5 @@ export default {
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
-  updateAvatarUser: ctrlWrapper(updateAvatarUser),
+  updateUser: ctrlWrapper(updateUser),
 };
