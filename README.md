@@ -100,3 +100,5 @@
 20. https://drink-master-project.onrender.com/api/privacy/policy - запрос .get, ответ - успешный 200 статус c параграфами текста
 
 21. https://drink-master-project.onrender.com/api/privacy/public - запрос .get, ответ - успешный 200 статус c параграфами текста
+
+22. https://drink-master-project.onrender.com/api/auth/users/subscribe - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус с сообщением "message": "Subscription email send success"
