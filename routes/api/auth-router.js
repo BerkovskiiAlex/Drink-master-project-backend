@@ -41,4 +41,10 @@ authRouter.patch(
   authController.updateUser
 );
 
+authRouter.get(
+  "/users/subscribe",
+  authenticate,
+  authController.sendSubscriptionEmail
+);
+
 export default authRouter;

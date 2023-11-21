@@ -7,8 +7,9 @@ import path from "path";
 import gravatar from "gravatar";
 
 import User from "../models/User.js";
+import Subscription from "../models/Subscriptions.js";
 
-import { HttpError, isUserAdult } from "../helpers/index.js";
+import { HttpError, isUserAdult, sendEmail } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -145,10 +146,37 @@ const updateUser = async (req, res) => {
   res.json({ avatarUrl: result.avatarUrl, username: result.username });
 };
 
+const sendSubscriptionEmail = async (req, res) => {
+  const { _id, email } = req.user;
+
+  const userSubscription = await Subscription.findOne({ userEmail: email });
+
+  if (userSubscription) {
+    throw HttpError(400, "Email already subscribed");
+  }
+
+  const subscription = {
+    to: email,
+    subject: "Subscription",
+    html: `<h1>Congratulations, you have subscribed to the news of the Drink Master website!</h1>`,
+  };
+
+  await sendEmail(subscription);
+
+  const newSubscription = new Subscription({ userId: _id, userEmail: email });
+
+  await newSubscription.save();
+
+  res.json({
+    message: "Subscription email send success",
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateUser: ctrlWrapper(updateUser),
+  sendSubscriptionEmail: ctrlWrapper(sendSubscriptionEmail),
 };
