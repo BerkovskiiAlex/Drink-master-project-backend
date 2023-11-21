@@ -96,3 +96,7 @@
 18. https://drink-master-project.onrender.com/api/drinks/own/remove - запрос .delete с вашим токеном в авторизации и "id": "..." в теле запроса, ответ - успешный 204 статус
 
 19. https://drink-master-project.onrender.com/api/drinks/own - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус cо списком созданных пользователем коктейлей
+
+20. https://drink-master-project.onrender.com/api/privacy/policy - запрос .get, ответ - успешный 200 статус c параграфами текста
+
+21. https://drink-master-project.onrender.com/api/privacy/public - запрос .get, ответ - успешный 200 статус c параграфами текста
