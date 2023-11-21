@@ -35,6 +35,10 @@ const getMainPageDrinks = async (req, res) => {
     limit,
   });
 
+  if (result.length === 0) {
+    throw HttpError(400, `Nothing was found for your request`);
+  }
+
   res.json(result);
 };
 

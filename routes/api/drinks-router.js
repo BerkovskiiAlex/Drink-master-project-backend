@@ -10,7 +10,11 @@ import { validateBody } from "../../decorators/index.js";
 
 const drinksRouter = express.Router();
 
-drinksRouter.get("/mainpage", authenticate, drinksController.getMainPageDrinks);
+drinksRouter.get(
+  "/cocktails/main",
+  authenticate,
+  drinksController.getMainPageDrinks
+);
 
 drinksRouter.get("/popular", authenticate, drinksController.getPopularDrinks);
 
