@@ -24,6 +24,15 @@ const publicOfferingSchema = new Schema(
     paragraph7: {
       type: String,
     },
+    paragraph8: {
+      type: String,
+    },
+    paragraph9: {
+      type: String,
+    },
+    paragraph10: {
+      type: String,
+    },
   },
   { versionKey: false, timestamps: true }
 );
