@@ -108,6 +108,7 @@ const getDrinkById = async (req, res) => {
 
 const addDrink = async (req, res) => {
   const { _id: owner, isAdult } = req.user;
+  const { body } = req;
 
   if (!req.file) {
     throw HttpError(400, `drinkPhoto required`);
@@ -118,9 +119,7 @@ const addDrink = async (req, res) => {
   await fs.rename(oldPath, newPath);
   const drinkUrl = path.join("drinkPhoto", filename);
 
-  const drinkData = JSON.parse(req.body.data);
-
-  if (!isAdult && drinkData.alcoholic === "Yes") {
+  if (!isAdult && body.alcoholic === "Yes") {
     throw HttpError(
       403,
       `A minor user is prohibited from adding alcoholic drinks`
@@ -128,7 +127,7 @@ const addDrink = async (req, res) => {
   }
 
   const result = await Drink.create({
-    ...drinkData,
+    ...body,
     drinkThumb: drinkUrl,
     owner,
   });
@@ -137,7 +136,7 @@ const addDrink = async (req, res) => {
 
 const removeDrink = async (req, res) => {
   const { _id: owner } = req.user;
-  const { id } = req.body;
+  const { id } = req.params;
 
   const drink = await Drink.findById(id);
 
@@ -191,10 +190,18 @@ const addToFavorites = async (req, res) => {
 
 const removeFromFavorites = async (req, res) => {
   const userId = req.user._id;
-  const drinkId = req.body.drinkId;
+  const { drinkId } = req.params;
 
   if (!drinkId) {
     return res.status(400).json({ message: "drinkId required" });
+  }
+
+  const favorite = await Favorite.findOne({ userId, drinkId });
+
+  if (!favorite) {
+    return res.status(404).json({
+      message: "The drink was not found in the user's favorites",
+    });
   }
 
   await Favorite.deleteOne({ userId, drinkId });

@@ -27,7 +27,11 @@ drinksRouter.post(
   drinksController.addDrink
 );
 
-drinksRouter.delete("/own/remove", authenticate, drinksController.removeDrink);
+drinksRouter.delete(
+  "/own/remove/:id",
+  authenticate,
+  drinksController.removeDrink
+);
 
 drinksRouter.get("/own", authenticate, drinksController.getUsersDrinks);
 
@@ -38,7 +42,7 @@ drinksRouter.post(
 );
 
 drinksRouter.delete(
-  "/favorite/remove",
+  "/favorite/remove/:drinkId",
   authenticate,
   drinksController.removeFromFavorites
 );

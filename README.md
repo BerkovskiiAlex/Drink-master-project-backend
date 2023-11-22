@@ -60,7 +60,7 @@
     "message": "Drink has been added to favorites"
     }
 
-13. https://drink-master-project.onrender.com/api/drinks/favorite/remove - запрос .delete с вашим токеном в авторизации и "drinkId": "..." в теле запроса, ответ - успешный 204 статус
+13. https://drink-master-project.onrender.com/api/drinks/favorite/remove/655d6d516c62290dfa2ac012 - (655d6d516c62290dfa2ac012 - это id коктейля, который пользователь добавил в избранное ранее) - запрос .delete с вашим токеном в авторизации, ответ - успешный 204 статус
 
 14. https://drink-master-project.onrender.com/api/drinks/search?page=1&limit=5&category=Shake&keyword=Just a Moonmint&ingredientId=64aebb7f82d96cc69e0eb4d7 - запрос .get с вашим токеном в авторизации и параметрами запроса в виде: {
     page
@@ -74,7 +74,7 @@
 
 16. https://drink-master-project.onrender.com/api/drinks/639b6de9ff77d221f190c563 - запрос .get с айди коктейля в параметрах вызова, ответ - успешный 200 статус с коктейлем. Индентификация пользователя не производится.
 
-17. https://drink-master-project.onrender.com/api/drinks/own/add - запрос .post с вашим токеном и телом запроса в формате form-data первый ключ которого называется drinkPhoto и является файлом, второй ключ запроса называется data и строкой запроса в виде
+17. https://drink-master-project.onrender.com/api/drinks/own/add - запрос .post с вашим токеном и телом запроса в формате form-data первый ключ которого называется drinkPhoto и является файлом. Пример запроса:
     {
     "drink": "...",
     "category": "одна из категорий",
@@ -93,7 +93,7 @@
     }]
     }, ингридиент должен быть минимум 1 с названием и айди. Остальные возможные поля можно посмотреть в описании коктейлей, по дефолту они пустые. Несовершеннолетние пользователи не могут добавлять алкогольные напитки. Ответ - успешный 201 статус с созданным коктейлем.
 
-18. https://drink-master-project.onrender.com/api/drinks/own/remove - запрос .delete с вашим токеном в авторизации и "id": "..." в теле запроса, ответ - успешный 204 статус
+18. https://drink-master-project.onrender.com/api/drinks/own/remove/655d6d516c62290dfa2ac012 - (655d6d516c62290dfa2ac012 - это id коктейля, который пользователь добавил ранее) - запрос .delete с вашим токеном в авторизации, ответ - успешный 204 статус
 
 19. https://drink-master-project.onrender.com/api/drinks/own - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус cо списком созданных пользователем коктейлей
 
