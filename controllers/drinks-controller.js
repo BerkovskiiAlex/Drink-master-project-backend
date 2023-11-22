@@ -15,8 +15,10 @@ const drinksPath = path.resolve("public", "drinkPhoto");
 const getMainPageDrinks = async (req, res) => {
   const { page = 1, limit = 10, category } = req.query;
 
+  const categories = category ? category.split(" ") : undefined;
+
   if (!category) {
-    throw HttpError(400, `category required`);
+    throw HttpError(400, `At least one category is required`);
   }
 
   const skip = (page - 1) * limit;
@@ -24,9 +26,9 @@ const getMainPageDrinks = async (req, res) => {
   const { isAdult = false } = req.user;
 
   const drinksCondition = isAdult
-    ? { category }
+    ? { category: { $in: categories } }
     : {
-        category: category,
+        category: { $in: categories },
         alcoholic: "Non alcoholic",
       };
 
