@@ -14,9 +14,10 @@ const drinksPath = path.resolve("public", "drinkPhoto");
 
 const getMainPageDrinks = async (req, res) => {
   const { page = 1, limit = 10, category } = req.query;
+  console.log(category);
 
-  const categories = category ? category.split(" ") : undefined;
-
+  const categories = category ? category.split(",") : undefined;
+  console.log(categories);
   if (!category) {
     throw HttpError(400, `At least one category is required`);
   }
