@@ -152,7 +152,7 @@ const sendSubscriptionEmail = async (req, res) => {
   const userSubscription = await Subscription.findOne({ userEmail: email });
 
   if (userSubscription) {
-    throw HttpError(400, "Email already subscribed");
+    throw HttpError(409, "Email already subscribed");
   }
 
   const subscription = {

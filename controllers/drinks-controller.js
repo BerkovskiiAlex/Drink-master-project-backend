@@ -6,7 +6,7 @@ import path from "path";
 import Drink from "../models/Drink.js";
 import Favorite from "../models/Favorite.js";
 
-import { HttpError } from "../helpers/index.js";
+import { HttpError, categorizeDrinks } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -38,7 +38,9 @@ const getMainPageDrinks = async (req, res) => {
     limit,
   });
 
-  res.json(result);
+  const categorizedResult = categorizeDrinks(result, 4);
+
+  res.json(categorizedResult);
 };
 
 const getPopularDrinks = async (req, res) => {
