@@ -79,7 +79,11 @@ const drinkSchema = new Schema(
       {
         title: { type: String, required: true },
         measure: { type: String, default: "" },
-        ingredientId: { type: Schema.Types.ObjectId, required: true },
+        ingredientId: {
+          type: Schema.Types.ObjectId,
+          ref: "ingredient",
+          required: true,
+        },
       },
     ],
     shortDescription: { type: String, default: "" },

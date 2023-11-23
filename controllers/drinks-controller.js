@@ -96,7 +96,10 @@ const getFilteredDrinks = async (req, res) => {
 const getDrinkById = async (req, res) => {
   const { id } = req.params;
 
-  const result = await Drink.findById(id);
+  const result = await Drink.findById(id).populate(
+    "ingredients.ingredientId",
+    "thumb-medium"
+  );
 
   if (!result) {
     throw HttpError(404, `Drink with id=${id} not found`);
