@@ -6,18 +6,17 @@ import path from "path";
 import Drink from "../models/Drink.js";
 import Favorite from "../models/Favorite.js";
 
-import { HttpError, categorizeDrinks } from "../helpers/index.js";
+import { HttpError } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 
 const drinksPath = path.resolve("public", "drinkPhoto");
 
 const getMainPageDrinks = async (req, res) => {
-  const { page = 1, limit = 10, category } = req.query;
-  console.log(category);
+  const { page = 1, limit = 4, category } = req.query;
 
   const categories = category ? category.split(",") : undefined;
-  console.log(categories);
+
   if (!category) {
     throw HttpError(400, `At least one category is required`);
   }
@@ -26,21 +25,60 @@ const getMainPageDrinks = async (req, res) => {
 
   const { isAdult = false } = req.user;
 
-  const drinksCondition = isAdult
-    ? { category: { $in: categories } }
-    : {
-        category: { $in: categories },
-        alcoholic: "Non alcoholic",
-      };
+  const isUserAdult = isAdult ? "Alcoholic" : "Non alcoholic";
 
-  const result = await Drink.find(drinksCondition, "-createdAt -updatedAt", {
-    skip,
-    limit,
-  });
+  const result = await Drink.aggregate([
+    {
+      $facet: {
+        [categories[0]]: [
+          {
+            $match: {
+              category: { $in: [categories[0]] },
+              alcoholic: isUserAdult,
+            },
+          },
+          { $project: { createdAt: 0, updatedAt: 0 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+        [categories[1]]: [
+          {
+            $match: {
+              category: { $in: [categories[1]] },
+              alcoholic: isUserAdult,
+            },
+          },
+          { $project: { createdAt: 0, updatedAt: 0 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+        [categories[2]]: [
+          {
+            $match: {
+              category: { $in: [categories[2]] },
+              alcoholic: isUserAdult,
+            },
+          },
+          { $project: { createdAt: 0, updatedAt: 0 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+        [categories[3]]: [
+          {
+            $match: {
+              category: { $in: [categories[3]] },
+              alcoholic: isUserAdult,
+            },
+          },
+          { $project: { createdAt: 0, updatedAt: 0 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+      },
+    },
+  ]);
 
-  const categorizedResult = categorizeDrinks(result);
-
-  res.json(categorizedResult);
+  res.json(result);
 };
 
 const getPopularDrinks = async (req, res) => {
@@ -123,7 +161,7 @@ const addDrink = async (req, res) => {
   await fs.rename(oldPath, newPath);
   const drinkUrl = path.join("drinkPhoto", filename);
 
-  if (!isAdult && body.alcoholic === "Yes") {
+  if (!isAdult && body.alcoholic === "Alcoholic") {
     throw HttpError(
       403,
       `A minor user is prohibited from adding alcoholic drinks`

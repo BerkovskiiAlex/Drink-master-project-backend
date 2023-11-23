@@ -53,7 +53,7 @@ const glassList = [
   "Coupe Glass",
 ];
 
-const alcoholicList = ["Yes", "Non alcoholic"];
+const alcoholicList = ["Alcoholic", "Non alcoholic"];
 
 const drinkSchema = new Schema(
   {
