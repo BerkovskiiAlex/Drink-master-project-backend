@@ -147,7 +147,10 @@ const updateUser = async (req, res) => {
 };
 
 const sendSubscriptionEmail = async (req, res) => {
-  const { _id, email } = req.user;
+  const { _id } = req.user;
+  const { email } = req.query;
+
+  console.log(email);
 
   const userSubscription = await Subscription.findOne({ userEmail: email });
 

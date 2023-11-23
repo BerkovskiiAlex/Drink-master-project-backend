@@ -38,7 +38,7 @@ const getMainPageDrinks = async (req, res) => {
     limit,
   });
 
-  const categorizedResult = categorizeDrinks(result, 4);
+  const categorizedResult = categorizeDrinks(result);
 
   res.json(categorizedResult);
 };
