@@ -9,7 +9,12 @@ import gravatar from "gravatar";
 import User from "../models/User.js";
 import Subscription from "../models/Subscriptions.js";
 
-import { HttpError, isUserAdult, sendEmail } from "../helpers/index.js";
+import {
+  HttpError,
+  cloudinary,
+  isUserAdult,
+  sendEmail,
+} from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -41,10 +46,16 @@ const signup = async (req, res) => {
   let avatarUrl;
 
   if (req.file) {
-    const { path: oldPath, filename } = req.file;
-    const newPath = path.join(avatarsPath, filename);
-    await fs.rename(oldPath, newPath);
-    avatarUrl = path.join("avatars", filename);
+    const { url } = await cloudinary.uploader.upload(req.file.path, {
+      folder: "drinkMasterPhotos",
+    });
+    avatarUrl = url;
+    await fs.unlink(req.file.path);
+
+    // const { path: oldPath, filename } = req.file;
+    // const newPath = path.join(avatarsPath, filename);
+    // await fs.rename(oldPath, newPath);
+    // avatarUrl = path.join("avatars", filename);
   } else {
     const options = {
       s: "200",
@@ -127,13 +138,16 @@ const updateUser = async (req, res) => {
   let updatedUser;
 
   if (req.file) {
-    const { path: oldPath, filename } = req.file;
+    const { url } = await cloudinary.uploader.upload(req.file.path, {
+      folder: "drinkMasterPhotos",
+    });
+    updatedUser = { ...req.body, avatarUrl: url };
+    await fs.unlink(req.file.path);
 
-    const newPath = path.join(avatarsPath, filename);
-    await fs.rename(oldPath, newPath);
-    const avatarUrl = path.join("avatars", filename);
-
-    updatedUser = { ...req.body, avatarUrl };
+    //  const { path: oldPath, filename } = req.file;
+    // const newPath = path.join(avatarsPath, filename);
+    // await fs.rename(oldPath, newPath);
+    // const avatarUrl = path.join("avatars", filename);
   } else {
     updatedUser = { ...req.body };
   }
