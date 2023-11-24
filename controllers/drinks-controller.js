@@ -15,6 +15,10 @@ const drinksPath = path.resolve("public", "drinkPhoto");
 const getMainPageDrinks = async (req, res) => {
   const { page = 1, limit = 4, category } = req.query;
 
+  if (page < 1 || limit < 1) {
+    throw HttpError(400, `page and limit must be equal to or greater than 1`);
+  }
+
   const categories = category ? category.split(",") : undefined;
 
   if (!category) {
@@ -84,6 +88,10 @@ const getMainPageDrinks = async (req, res) => {
 const getPopularDrinks = async (req, res) => {
   const { isAdult = false } = req.user;
   const { top = 10 } = req.query;
+
+  if (top < 1) {
+    throw HttpError(400, `top must be equal to or greater than 1`);
+  }
 
   const topNum = parseInt(top);
 
@@ -270,6 +278,11 @@ const removeFromFavorites = async (req, res) => {
 const getFavoriteDrinks = async (req, res) => {
   const userId = req.user._id;
   const { page = 1, limit = 10 } = req.query;
+
+  if (page < 1 || limit < 1) {
+    throw HttpError(400, `page and limit must be equal to or greater than 1`);
+  }
+
   const skip = (page - 1) * limit;
 
   const favorites = await Favorite.find({ userId });
