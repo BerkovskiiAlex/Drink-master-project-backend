@@ -125,12 +125,20 @@ const getFilteredDrinks = async (req, res) => {
     ...(ingredientId && { "ingredients.ingredientId": ingredientId }),
   };
 
+  const totalDrinks = await Drink.countDocuments(drinksCondition);
+
   const result = await Drink.find(drinksCondition, "-createdAt -updatedAt", {
     skip,
-    limit,
+    limit: parseInt(limit),
   });
 
-  res.json(result);
+  res.json({
+    totalDrinks: totalDrinks,
+    totalPages: Math.ceil(totalDrinks / parseInt(limit)),
+    currentPage: parseInt(page),
+    limit: parseInt(limit),
+    result,
+  });
 };
 
 const getDrinkById = async (req, res) => {
@@ -253,16 +261,30 @@ const removeFromFavorites = async (req, res) => {
 
 const getFavoriteDrinks = async (req, res) => {
   const userId = req.user._id;
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
 
   const favorites = await Favorite.find({ userId });
 
   const favoriteDrinkIds = favorites.map((fav) => fav.drinkId);
-  console.log(favoriteDrinkIds);
-  const favoriteDrinks = await Drink.find({
+
+  const totalFavorites = await Drink.countDocuments({
     _id: { $in: favoriteDrinkIds },
   });
 
-  res.json(favoriteDrinks);
+  const favoriteDrinks = await Drink.find(
+    { _id: { $in: favoriteDrinkIds } },
+    "-createdAt -updatedAt",
+    { skip, limit: parseInt(limit) }
+  );
+
+  res.json({
+    totalFavorites: totalFavorites,
+    totalPages: Math.ceil(totalFavorites / parseInt(limit)),
+    currentPage: parseInt(page),
+    limit: parseInt(limit),
+    favoriteDrinks: favoriteDrinks,
+  });
 };
 
 export default {
