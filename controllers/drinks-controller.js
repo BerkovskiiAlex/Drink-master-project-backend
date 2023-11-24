@@ -136,8 +136,8 @@ const getFilteredDrinks = async (req, res) => {
     totalDrinks: totalDrinks,
     totalPages: Math.ceil(totalDrinks / parseInt(limit)),
     currentPage: parseInt(page),
-    limit: parseInt(limit),
-    result,
+    perPage: parseInt(limit),
+    data: result,
   });
 };
 
@@ -290,8 +290,8 @@ const getFavoriteDrinks = async (req, res) => {
     totalFavorites: totalFavorites,
     totalPages: Math.ceil(totalFavorites / parseInt(limit)),
     currentPage: parseInt(page),
-    limit: parseInt(limit),
-    favoriteDrinks: favoriteDrinks,
+    perPage: parseInt(limit),
+    data: favoriteDrinks,
   });
 };
 
