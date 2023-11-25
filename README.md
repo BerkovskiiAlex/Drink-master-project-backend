@@ -45,7 +45,7 @@
 
 6. https://drink-master-project.onrender.com/api/auth/users/update - запрос .patch с вашим токеном в авторизации новым username, файлом аватарки или username + файл аватарки одновременно в формате form-data, ответ - успешный 200 статус с новым расположением аватарки и username
 
-7. https://drink-master-project.onrender.com/api/filters/ingredients?page=2&limit=5 - запрос .get с вашим токеном в авторизации и возможностью пагинации: page, limit(по дефолту gape=1&limit=10), ответ - успешный 200 статус со списком ингридиентов
+7. https://drink-master-project.onrender.com/api/filters/ingredients - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус со списком ингридиентов
 
 8. https://drink-master-project.onrender.com/api/filters/categories - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус с массивом всех категорий в алфавитном порядке
 
