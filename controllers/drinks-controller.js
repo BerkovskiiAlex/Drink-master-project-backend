@@ -172,12 +172,9 @@ const addDrink = async (req, res) => {
     throw HttpError(400, `drinkPhoto required`);
   }
 
-  const { url: drinkMasterPhotos } = await cloudinary.uploader.upload(
-    req.file.path,
-    {
-      folder: "drinkMasterPhotos",
-    }
-  );
+  const { url } = await cloudinary.uploader.upload(req.file.path, {
+    folder: "drinkMasterPhotos",
+  });
   await fs.unlink(req.file.path);
 
   // const { path: oldPath, filename } = req.file;
@@ -194,7 +191,7 @@ const addDrink = async (req, res) => {
 
   const result = await Drink.create({
     ...body,
-    drinkThumb: drinkMasterPhotos,
+    drinkThumb: url,
     owner,
   });
   res.status(201).json(result);
