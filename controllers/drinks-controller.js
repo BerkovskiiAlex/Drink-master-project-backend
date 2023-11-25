@@ -150,16 +150,20 @@ const getFilteredDrinks = async (req, res) => {
 };
 
 const getDrinkById = async (req, res) => {
+  const { _id: userId } = req.user;
   const { id } = req.params;
 
-  const result = await Drink.findById(id).populate(
-    "ingredients.ingredientId",
-    "thumb-medium"
-  );
+  const favoriteDrink = await Favorite.findOne({ userId, drinkId: id });
+
+  const result = await Drink.findById(id)
+    .populate("ingredients.ingredientId", "thumb-medium")
+    .lean();
 
   if (!result) {
     throw HttpError(404, `Drink with id=${id} not found`);
   }
+
+  result.isFavorite = !!favoriteDrink;
 
   res.json(result);
 };

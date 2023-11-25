@@ -49,6 +49,6 @@ drinksRouter.delete(
 
 drinksRouter.get("/favorite", authenticate, drinksController.getFavoriteDrinks);
 
-drinksRouter.get("/:id", drinksController.getDrinkById);
+drinksRouter.get("/:id", authenticate, drinksController.getDrinkById);
 
 export default drinksRouter;

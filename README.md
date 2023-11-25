@@ -72,7 +72,7 @@
 
 15. https://drink-master-project.onrender.com/api/drinks/favorite - запрос .get с вашим токеном и возможностью пагинации, ответ - успешный 200 статус с коктейлями пользователя в избранном.
 
-16. https://drink-master-project.onrender.com/api/drinks/639b6de9ff77d221f190c563 - запрос .get с айди коктейля в параметрах вызова, ответ - успешный 200 статус с коктейлем. Индентификация пользователя не производится.
+16. https://drink-master-project.onrender.com/api/drinks/639b6de9ff77d221f190c563 - запрос .get с вашим токеном и айди коктейля в параметрах вызова, ответ - успешный 200 статус с коктейлем и находится ли он в избранных.
 
 17. https://drink-master-project.onrender.com/api/drinks/own/add - запрос .post с вашим токеном и телом запроса в формате form-data первый ключ которого называется drinkPhoto и является файлом. Пример запроса:
     {
