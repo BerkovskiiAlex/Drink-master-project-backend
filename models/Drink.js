@@ -57,16 +57,16 @@ const alcoholicList = ["Alcoholic", "Non alcoholic"];
 
 const drinkSchema = new Schema(
   {
-    drink: { type: String, required: true },
+    drink: { type: String },
     drinkAlternate: { type: String, default: "" },
     tags: { type: String, default: "" },
     video: { type: String, default: "" },
-    category: { type: String, enum: categoryList, required: true },
+    category: { type: String, enum: categoryList },
     IBA: { type: String, default: "" },
-    alcoholic: { type: String, enum: alcoholicList, required: true },
-    glass: { type: String, enum: glassList, required: true },
-    description: { type: String, required: true },
-    instructions: { type: String, required: true },
+    alcoholic: { type: String, enum: alcoholicList },
+    glass: { type: String, enum: glassList },
+    description: { type: String },
+    instructions: { type: String },
     instructionsES: { type: String, default: "" },
     instructionsDE: { type: String, default: "" },
     instructionsFR: { type: String, default: "" },
@@ -74,20 +74,19 @@ const drinkSchema = new Schema(
     instructionsRU: { type: String, default: "" },
     instructionsPL: { type: String, default: "" },
     instructionsUK: { type: String, default: "" },
-    drinkThumb: { type: String, required: true },
+    drinkThumb: { type: String },
     ingredients: [
       {
-        title: { type: String, required: true },
+        title: { type: String },
         measure: { type: String, default: "" },
         ingredientId: {
           type: Schema.Types.ObjectId,
           ref: "ingredient",
-          required: true,
         },
       },
     ],
     shortDescription: { type: String, default: "" },
-    owner: { type: Schema.Types.ObjectId, required: true },
+    owner: { type: Schema.Types.ObjectId },
   },
   { versionKey: false, timestamps: true }
 );
@@ -101,3 +100,40 @@ drinkSchema.post("findOneAndUpdate", handleSaveError);
 const Drink = model("drink", drinkSchema);
 
 export default Drink;
+
+// const drinkSchema = new Schema(
+//   {
+//     drink: { type: String, required: true },
+//     drinkAlternate: { type: String, default: "" },
+//     tags: { type: String, default: "" },
+//     video: { type: String, default: "" },
+//     category: { type: String, enum: categoryList, required: true },
+//     IBA: { type: String, default: "" },
+//     alcoholic: { type: String, enum: alcoholicList, required: true },
+//     glass: { type: String, enum: glassList, required: true },
+//     description: { type: String, required: true },
+//     instructions: { type: String, required: true },
+//     instructionsES: { type: String, default: "" },
+//     instructionsDE: { type: String, default: "" },
+//     instructionsFR: { type: String, default: "" },
+//     instructionsIT: { type: String, default: "" },
+//     instructionsRU: { type: String, default: "" },
+//     instructionsPL: { type: String, default: "" },
+//     instructionsUK: { type: String, default: "" },
+//     drinkThumb: { type: String, required: true },
+//     ingredients: [
+//       {
+//         title: { type: String, required: true },
+//         measure: { type: String, default: "" },
+//         ingredientId: {
+//           type: Schema.Types.ObjectId,
+//           ref: "ingredient",
+//           required: true,
+//         },
+//       },
+//     ],
+//     shortDescription: { type: String, default: "" },
+//     owner: { type: Schema.Types.ObjectId, required: true },
+//   },
+//   { versionKey: false, timestamps: true }
+// );
