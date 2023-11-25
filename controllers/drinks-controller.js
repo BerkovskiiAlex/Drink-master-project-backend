@@ -6,7 +6,7 @@ import path from "path";
 import Drink from "../models/Drink.js";
 import Favorite from "../models/Favorite.js";
 
-import { HttpError } from "../helpers/index.js";
+import { HttpError, cloudinary } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 
