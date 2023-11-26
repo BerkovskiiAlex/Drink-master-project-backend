@@ -11,6 +11,7 @@ import authRouter from "./routes/api/auth-router.js";
 import filtersRouter from "./routes/api/filters-router.js";
 import drinksRouter from "./routes/api/drinks-router.js";
 import policyPublicRouter from "./routes/api/policy-public-router.js";
+import applicationRouter from "./routes/api/application-router.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/filters", filtersRouter);
 app.use("/api/drinks", drinksRouter);
 app.use("/api/privacy", policyPublicRouter);
+app.use("/api", applicationRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

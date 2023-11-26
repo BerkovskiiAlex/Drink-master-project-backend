@@ -102,3 +102,5 @@
 21. https://drink-master-project.onrender.com/api/privacy/public - запрос .get, ответ - успешный 200 статус c параграфами текста
 
 22. https://drink-master-project.onrender.com/api/auth/users/subscribe?email=migew56640@bustayes.com - запрос .get с вашим токеном в авторизации и имейлом в параметрах запроса, ответ - успешный 200 статус с сообщением "message": "Subscription email send success"
+
+23. https://drink-master-project.onrender.com/api/application - запрос .get, ответ - успешный 200 статус с сообщением "message": "Api started"
