@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.1",
-    "title": "Swagger test",
+    "version": "1.0.2",
+    "title": "DrinkMaster documentation",
     "description": "Showing off swagger-ui-express",
     "license": {
       "name": "MIT",
@@ -28,25 +28,90 @@
     {
       "name": "Drink",
       "description": "Drink`s endpoints"
+    },
+    {
+      "name": "privacy",
+      "description": "Privacy endpoints"
     }
   ],
   "paths": {
+    "/privacy/policy":{
+      "get": {
+        "tags": ["privacy"],
+        "summary": "Policy text",
+        "responses": {
+          "200": {
+            "description": "**Successfull operation**",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/privacy/public":{
+      "get": {
+        "tags": ["privacy"],
+        "summary": "Public text",
+        "responses": {
+          "200": {
+            "description": "**Successfull operation**",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/cocktails/main": {
+      "get": {
+        "tags": ["Drink"],
+        "summary": "List of cocktails by selected categories.",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "**Запит з вашим токеном авторизації (Bearer), категорії**. \n\nПагінація (по дефолту gape=1&limit=10)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/drinkCoctailSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "**Successfull operation** \n\nСписок коктейлів у вибраних категоріях залежно від повноліття користувача",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkCoctailSchemaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**Page and limit must be equal to or greater than 1 | At least one category is required**",
+            "content": {}
+          },
+          "401": {
+            "description": "**Unauthorized (invalid access token)**",
+            "content": {}
+          }
+        }
+      }
+    },
     "/drinks/favorite/remove": {
       "delete": {
         "tags": ["Drink"],
         "summary": "Removing a cocktail from favorites",
         "security": [{ "Bearer": [] }],
         "responses": {
-          "201": {
-            "description": "Successfull operation. Видалення коктейлю з обраних.",
+          "204": {
+            "description": "**Successfull operation**. Видалення коктейлю з обраних. \n\n**Приклад : /drinks/favorite/remove/655d6d516c62290dfa2ac012** за даним запитом URL + ваш токен (Bearer) \n\n(655d6d516c62290dfa2ac012 - це id коктейля, який користувач додав в улюблене раніше) ",
             "content": {}
           },
           "400": {
-            "description": "Bad Request. (drinkId required)",
+            "description": "**Bad Request. (drinkId required)**",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -57,17 +122,33 @@
         "tags": ["Drink"],
         "summary": "Adding a cocktail to favorites",
         "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "**Запит з вашим токеном авторизації (Bearer) і 'drinkId'**",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/drinkFavoriteAddSchema"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "The request succeeded. Додавання коктейлю до обраних.",
-            "content": {}
+            "description": "**The request succeeded**. Додавання коктейлю до обраних.",
+            "content": {
+                "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkFavoriteAddSchemaResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad Request. (drinkId required)",
+            "description": "**Bad Request. (drinkId required)**",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -79,16 +160,16 @@
         "summary": "Removing your own cocktail",
         "security": [{ "Bearer": [] }],
         "responses": {
-          "201": {
-            "description": "The request succeeded. Видалення власного коктейлю.",
+          "204": {
+            "description": "**The request succeeded**. Видалення власного коктейлю. \n\n**Приклад**: (/drinks/own/remove/655d6d516c62290dfa2ac012)  \n\n655d6d516c62290dfa2ac012 -  id коктейлю, який користувач додав раніше",
             "content": {}
           },
           "400": {
-            "description": "Bad Request. (drinkId required)",
+            "description": "**Bad Request. (drinkId required)**",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -99,17 +180,27 @@
         "tags": ["Drink"],
         "summary": "Adding your own cocktail",
         "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "опис",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/drinkOwnAddSchemaFormData"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "The request succeeded. Додавання власного коктейлю. У разі, якщо користувачеві немає 18 років, коктейль має бути лише безалкогольним.",
+            "description": "**The request succeeded**. Додавання власного коктейлю. У разі, якщо користувачеві немає 18 років, коктейль має бути лише безалкогольним.",
             "content": {}
           },
           "400": {
-            "description": "Bad Request. (drinkId required)",
+            "description": "**Bad Request. (drinkId required)**",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -123,7 +214,13 @@
         "responses": {
           "200": {
             "description": "Successfull operation. Отримання власних коктейлів.",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkOwnSchemaResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized (invalid access token)",
@@ -136,7 +233,6 @@
       "get": {
         "tags": ["Drink"],
         "summary": "Getting one cocktail by ID",
-        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successfull operation. Отримання одного коктейлю за його ідентифікатором.",
@@ -155,9 +251,15 @@
         "summary": "Getting cocktails from favorites",
         "security": [{ "Bearer": [] }],
         "responses": {
-          "200": {
+          "200": { 
             "description": "Successfull operation. Отримання коктейлів, доданих користувачем в обрані.",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkFavoriteSchemaResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized (invalid access token)",
@@ -171,10 +273,26 @@
         "tags": ["Drink"],
         "summary": "Getting Cocktails by Category + Ingredient + Keyword",
         "security": [{ "Bearer": [] }],
+          "requestBody": {
+            "description": "**Запит з вашим токеном авторизації (Bearer) і параметрами що наведені нижче**",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkSearchSchema"
+                }
+              }
+            }
+          },
         "responses": {
           "200": {
-            "description": "Successfull operation. Отримання коктейлів обраної категорії + інгредієнта + ключового слова з пагінацією та динамічною кількістю коктейлів на сторінці. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними.",
-            "content": {}
+            "description": "**Successfull operation**. Отримання коктейлів обраної категорії + інгредієнта + ключового слова з пагінацією та динамічною кількістю коктейлів на сторінці. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними. \n\n **Приклад**: за даним URL (/drinks/search?category=Shake&keyword=Just a Moonmint&ingredientId=64aebb7f82d96cc69e0eb4d7) \n\nВам відповідь буде представлена в низу",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkSearchSchemaResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized (invalid access token)",
@@ -190,8 +308,14 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "Successfull operation. Отримання популярних коктейлів на основі кількості додавань до обраних користувачами. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними.",
-            "content": {}
+            "description": "Successfull operation. Отримання популярних коктейлів на основі кількості додавань до обраних користувачами. У разі, якщо користувачеві немає 18 років, коктейлі мають бути лише безалкогольними. \n\n**Приклад**: (/drinks/popular?top=2 ) Список коктейлів, перерахованих в порядку зменьшення і в залежності від віку повноліття людини",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/drinkPopularSchemaResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized (invalid access token)",
@@ -224,7 +348,7 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "Successfull operation. Отримання списку тари для сервірування напоїв",
+            "description": "**Successfull operation**. Отримання списку тари для сервірування напоїв",
             "content": {
               "application/json": {
               "schema": {
@@ -234,7 +358,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -247,7 +371,7 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "Successfull operation. Отримання списку категорій коктейлів, відсортованих за алфавітом",
+            "description": "**Successfull operation**. Отримання списку категорій коктейлів, відсортованих за алфавітом",
             "content": {
               "application/json": {
               "schema": {
@@ -257,7 +381,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -270,7 +394,7 @@
          "security": [{ "Bearer": [] }],
          "responses": {
           "200": {
-            "description": "Successfull operation. Отримання списку інгредієнтів",
+            "description": "**Successfull operation**. Отримання списку інгредієнтів \n\n Пагінація по дефолту 'gape=1&limit=10' ",
             "content": {
               "application/json": {
               "schema": {
@@ -279,8 +403,12 @@
             }
             }
           },
+          "400": {
+            "description": "**page and limit must be equal to or greater than 1**",
+            "content": {}
+          },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           }
         }
@@ -320,18 +448,23 @@
         "summary": "User Updates.",
         "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "Ендпоінт для оновлення інформації про користувача або одного з полів контактної інформації",
+          "description": "Ендпоінт для оновлення інформації про користувача або одного з полів контактної інформації. \n\n**'application/json'** - в даному тілі запиту ви можете тільки змінити username. \n\n **'multipart/form-data'** - в даному тілі запиту формата form-data, ви зможете змінити 'username', 'avatarUrl' ",
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/userUpdateSchema"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/userUpdateSchemaFormData"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Successfull operation",
+            "description": "**Successfull operation** \n\nОтримуєте новий шлях аватарки і username ",
             "content": {
               "application/json": {
                 "schema": {
@@ -354,7 +487,7 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "Successfull operation \nПри переході URL /users/current ви отримуєте певну доступну інформацію. На данний момент це: email, subscription",
+            "description": "**Successfull operation** \nПри переході URL /users/current ви отримуєте певну доступну інформацію. На данний момент це: token, email, username, isAdult, avatarUrl",
             "content": {
               "application/json": {
                 "schema": {
@@ -364,15 +497,15 @@
             }
           },
           "400": {
-            "description": "No token provided",
+            "description": "**No token provided**",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "**Unauthorized (invalid access token)**",
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session",
+            "description": "**Invalid user / Invalid session**",
             "content": {}
           }
         }
@@ -385,19 +518,24 @@
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "# Опис параметрів запиту: **username** - string, ім'я користувача. **email** - string, електронна пошта користувача. **password** - string, зашифрований пароль користувача.",
+          "description": "Опис параметрів запиту: (Фото юзера є дефолтним) **username** - string, ім'я користувача. **email** - string, електронна пошта користувача. **password** - string, зашифрований пароль користувача. **birthdate** - string, день народження користувача \n\nУ варіанті з **'multipart/form-data'**, є можливість одразу завантажити фото користувача. **avatar** - string, вибранный файл до 5мб",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/userSignupSchema"
               }
-            }
+            },
+            "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/userSignupSchemaFormData"
+                }
+              }
           }
         },
         "responses": {
           "201": {
-            "description": "Successful operation. New User Registered. Опис параметрів відповіді: **username** - string, ім'я користувача. **email** - string, електронна пошта користувача.",
+            "description": "**Successful operation**. New User Registered. Опис параметрів відповіді: **username** - string, ім'я користувача. **email** - string, електронна пошта користувача.",
             "content": {
               "application/json": {
                 "schema": {
@@ -407,11 +545,11 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "**Bad request (invalid request body) | Birthdate is required | Incorrect date**",
             "content": {}
           },
           "409": {
-            "description": "Provided email already exists",
+            "description": "**Provided email already exists**",
             "content": {}
           }
         }
@@ -436,7 +574,7 @@
         },
         "responses": {
           "201": {
-            "description": "Successful operation. **token** - string, токен використовується для зберігання стану авторизації користувача в системі, що дозволяє користувачам здійснювати захищені запити до API. Токен є довільним рядком символів і генерується при кожній новій авторизації користувача. (**subscription** - string, заменить на age (adult|!adult))",
+            "description": "**Successful operation**. **token** - string, токен використовується для зберігання стану авторизації користувача в системі, що дозволяє користувачам здійснювати захищені запити до API. Токен є довільним рядком символів і генерується при кожній новій авторизації користувача. **isAdult** - boolean, вік особи 'дорослий' і 'не дорослий' ",
             "content": {
               "application/json": {
                 "schema": {
@@ -445,16 +583,20 @@
               }
             }
           },
+          "401": {
+            "description": "**Email or password invalid**",
+            "content": {}
+          },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "**Bad request (invalid request body)**",
             "content": {}
           },
           "403": {
-            "description": "Forbidden. (Provided password is incorrect)",
+            "description": "**Forbidden. (Provided password is incorrect)**",
             "content": {}
           },
           "404": {
-            "description": "Not Found. (User with such email not found)",
+            "description": "**Not Found. (User with such email not found)**",
             "content": {}
           }
         }
@@ -467,11 +609,11 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "204": {
-            "description": "User signed out - успішний вихід з системи. \n\nЕндпоінт логауту - це механізм виходу з системи, який припиняє дію сесії користувача та знищує токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /auth/users/logout з валідним токеном у заголовку. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.\n",
+            "description": "**User signed out** - успішний вихід з системи. \n\nЕндпоінт логауту - це механізм виходу з системи, який припиняє дію сесії користувача та знищує токен доступу, що був виданий при попередній аутентифікації. \n\n**Опис**: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /auth/users/logout з валідним токеном у заголовку. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.\n",
             "content": {}
           },
           "401": {
-            "description": "Bearer auth failed - невалідний токен - Якщо запит не містить дійсний токен або токен вже вичерпав свій термін дії, сервер поверне відповідь з кодом статусу HTTP 401 Unauthorized.",
+            "description": "**Bearer auth failed** - невалідний токен - Якщо запит не містить дійсний токен або токен вже вичерпав свій термін дії, сервер поверне відповідь з кодом статусу HTTP 401 Unauthorized.",
             "content": {}
           }
         }
@@ -480,9 +622,431 @@
   },
   "components": {
     "schemas": {
-      "userSignupSchema": {
+      "drinkOwnSchemaResponse": {
+        "type":"array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "639b6de9ff77d221f190c563"
+            },
+            "drink": {
+              "type": "string",
+              "example": "Just a Moonmint"
+            },
+            "drinkAlternate": {
+              "type": "string",
+              "example": "Sorry, not specified"
+            },
+            "tags": {
+              "type": "string",
+              "example": "Sorry, not specified"
+            },
+            "video": {
+              "type": "string",
+              "example": "Sorry, not specified"
+            },
+            "category": {
+              "type": "string",
+              "example": "Shake"
+            },
+            "IBA": {
+              "type": "string",
+              "example": "Sorry, not specified"
+            },
+            "alcoholic": {
+              "type": "string",
+              "example": "Non alcoholic"
+            },
+            "glass": {
+              "type": "string",
+              "example": "Highball Glass"
+            },
+            "description": {
+              "type": "string",
+              "example": "Just a Moonmint is a refreshing and minty cocktail that combines..."
+            },
+            "instructions": {
+              "type": "string",
+              "example": "Place all ingredients in the blender jar - cover and..."
+            },
+            "drinkThumb": {
+              "type": "string",
+              "example": "https://ftp.goit.study/img/drinkify/recipes/Just_a_Moonmint.jpg"
+            },
+            "ingredients": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id":{
+                    "type": "string",
+                    "example": "6564e0c542c9ebd9eaab5db8"
+                  },
+                  "title":{
+                    "type": "string",
+                    "example": "Milk"
+                  },
+                  "measure":{
+                    "type": "string",
+                    "example": "2 cup"
+                  },
+                  "ingredientId":{
+                    "type": "string",
+                    "example": "64aebb7f82d96cc69e0eb4d5"
+                  }
+                }
+              }
+            },
+            "shortDescription": {
+              "type": "string",
+              "example": "A refreshing and minty cocktail with vodka, lime juice, and mint syrup."
+            }
+          }
+        }
+      },
+      "drinkOwnAddSchemaFormData": {
         "type": "object",
-        "required": [ "username","email", "password"],
+        "required": [ "drink","category", "alcoholic", "glass", "description", "instructions", "drinkThumb", "title", "ingredientId", "owner"],
+        "properties": {
+          "drinkPhoto": {
+            "type": "string",
+            "description": "вибранный файл до 5мб"
+          },
+          "drink": {
+            "type": "string",
+            "example": "Just a Moonmint"
+          },
+          "category": {
+            "type": "string",
+            "example": "Shake"
+          },
+          "alcoholic": {
+            "type": "string",
+            "example": "Non alcoholic"
+          },
+          "glass": {
+            "type": "string",
+            "example": "Highball Glass"
+          },
+          "description": {
+            "type": "string",
+            "example": "Just a Moonmint is a refreshing and minty cocktail that combines..."
+          },
+          "instructions": {
+            "type": "string",
+            "example": "Place all ingredients in the blender jar - cover and..."
+          },
+          "drinkThumb": {
+            "type": "string",
+            "example": "https://ftp.goit.study/img/drinkify/recipes/Just_a_Moonmint.jpg"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title":{
+                  "type": "string",
+                  "example": "Milk"
+                },
+                "ingredientId":{
+                  "type": "string",
+                  "example": "64aebb7f82d96cc69e0eb4d5"
+                }
+              }
+            }
+          }
+        }
+      },
+      "drinkSearchSchemaResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "totalDrinks": {
+              "type": "number",
+              "description": "quantity drinks",
+              "example": "1"
+            },
+            "totalPages": {
+              "type": "number",
+              "description": "quantity pages",
+              "example": "1"
+            },
+            "currentPage": {
+              "type": "number",
+              "description": "current quantity pages",
+              "example": "1"
+            },
+            "perPage": {
+              "type": "number",
+              "description": "quantity page",
+              "example": "10"
+            },
+            "data": {
+              "type":"array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "639b6de9ff77d221f190c563"
+                  },
+                  "drink": {
+                    "type": "string",
+                    "example": "Just a Moonmint"
+                  },
+                  "drinkAlternate": {
+                    "type": "string",
+                    "example": "Sorry, not specified"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "example": "Sorry, not specified"
+                  },
+                  "video": {
+                    "type": "string",
+                    "example": "Sorry, not specified"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "Shake"
+                  },
+                  "IBA": {
+                    "type": "string",
+                    "example": "Sorry, not specified"
+                  },
+                  "alcoholic": {
+                    "type": "string",
+                    "example": "Non alcoholic"
+                  },
+                  "glass": {
+                    "type": "string",
+                    "example": "Highball Glass"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Just a Moonmint is a refreshing and minty cocktail that combines..."
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "example": "Place all ingredients in the blender jar - cover and..."
+                  },
+                  "drinkThumb": {
+                    "type": "string",
+                    "example": "https://ftp.goit.study/img/drinkify/recipes/Just_a_Moonmint.jpg"
+                  },
+                  "ingredients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "_id":{
+                          "type": "string",
+                          "example": "6564e0c542c9ebd9eaab5db8"
+                        },
+                        "title":{
+                          "type": "string",
+                          "example": "Milk"
+                        },
+                        "measure":{
+                          "type": "string",
+                          "example": "2 cup"
+                        },
+                        "ingredientId":{
+                          "type": "string",
+                          "example": "64aebb7f82d96cc69e0eb4d5"
+                        }
+                      }
+                    }
+                  },
+                  "shortDescription": {
+                    "type": "string",
+                    "example": "A refreshing and minty cocktail with vodka, lime juice, and mint syrup."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "drinkFavoriteSchemaResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "id object",
+              "example": "6557c2adb4b965f85ce6bc9c"
+            },
+            "userId": {
+              "type": "string",
+              "description": "user id",
+              "example": "655733320a63f9d5931b92b9"
+            },
+            "drinkId": {
+              "type": "string",
+              "description": "drink id",
+              "example": "639b6de9ff77d221f190c50f"
+            }
+          }
+        }
+      },
+      "drinkPopularSchemaResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "id object",
+              "example": "6557b9c2b17ddd4d4b31024b"
+            },
+            "userId": {
+              "type": "string",
+              "description": "user id",
+              "example": "655733320a63f9d5931b92b9"
+            },
+            "drinkId": {
+              "type": "string",
+              "description": "drink id",
+              "example": "639b6de9ff77d221f190c508"
+            }
+          }
+        }
+      },
+      "drinkSearchSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Category drink",
+            "example": "Shake"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "The key word in the name of the cocktail",
+            "example": "Just a Moonmint"
+          },
+          "ingredientId": {
+            "type": "string",
+            "description": "id ingredient",
+            "example": "64aebb7f82d96cc69e0eb4d7"
+          }
+        }
+      },
+      "drinkFavoriteAddSchemaResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+              "message": {
+              "example": "Drink has been added to favorites"
+            }
+          }
+        }
+      },
+      "drinkFavoriteAddSchema": {
+        "type": "object",
+        "properties": {
+          "drinkId": {
+            "type": "string",
+            "description": "id drink",
+            "example": "639b6de9ff77d221f190c56d"
+          }
+        }
+      },
+      "drinkCoctailSchemaResponse": {
+        "type": "object",
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Name of the drink",
+            "example": "Cola | Beer"
+          },
+          "drinkAlternate": {
+            "type": "string",
+            "description": "Alternative (similar) drinks",
+            "example": " Cola vs Pepsi"
+          },
+          "tags": {
+            "type": "string",
+            "description": "Summarizing drink tags",
+            "example": "Energizing drink"
+          },
+          "video": {
+            "type": "string",
+            "description": "Method of preparation, if any",
+            "example": "шлях до відео"
+          },
+          "category": {
+            "type": "string",
+            "description": "Alcohol our drink category",
+            "example": "Ordinary Drink | Cocktail | Shake"
+          },
+          "IBA": {
+            "type": "string",
+            "description": "List of Official IBA Cocktails have 3 category",
+            "example": "Unforgettables | Contemporary Classics | New Era Drinks"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "Does it contain alcohol?",
+            "example": "Alcoholic | Non alcoholic"
+          },
+          "glass": {
+            "type": "string",
+            "description": "Container for serving",
+            "example": "Highball glass | Cocktail glass | Old-fashioned glass"
+          },
+          "description": {
+            "type": "string",
+            "description": "description",
+            "example": "This drink was invented during the...."
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Explanation of Use",
+            "example": "Use the drink only chilled"
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "шлях до фото",
+            "example": "/img/drinkify/recipes/photo"
+          },
+          "ingredients": {
+            "type": "string",
+            "description": "ingredients used to create the drink",
+            "example": "lemon, syrup, ice"
+          },
+          "shortDescription": {
+            "type": "string",
+            "description": "Short description ",
+            "example": "The drink has been created since 1999"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Who created in the app",
+            "example": "John"
+          }
+        }
+      },
+      "drinkCoctailSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Alcohol our drink category",
+            "example": "Ordinary Drink | Cocktail | Shake"
+          }
+        }
+      },
+      "userSignupSchemaFormData": {
+        "type": "object",
+        "required": [ "username","email", "password", "birthdate"],
         "properties": {
           "username": {
             "type": "string",
@@ -499,6 +1063,42 @@
             "type": "string",
             "description": "User password min 6 values",
             "example": "123456"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "вибранный файл до 5мб"
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "YYYY-MM-DD",
+            "example": "1990-03-20"
+          }
+        }
+      },
+      "userSignupSchema": {
+        "type": "object",
+        "required": [ "username","email", "password", "birthdate"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "Johny"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "user213@gmail.com",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password min 6 values",
+            "example": "123456"
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "YYYY-MM-DD",
+            "example": "1990-03-20"
           }
         }
       },
@@ -515,12 +1115,15 @@
               "type": "string",
               "description": "User email",
               "format": "email"
+            },
+            "avatarUrl": {
+              "type": "string",
+              "description": "шлях до фото"
             }
           }
         },
         "example": [
-          { "email": "1@gmail.com", "username": "Johny" },
-          { "email": "2@gmail.com", "username": "David" }
+          { "email": "user1@gmail.com", "username": "Johny", "avatarUrl": "/user/photo" }
         ]
       },
       "userSigninSchema": {
@@ -553,14 +1156,22 @@
               "description": "User email",
               "format": "email"
             },
-            "subscription": {
-                "type": "string",
-                "description": "User status (starter | pro | business)"
+            "isAdult": {
+              "type": "boolean",
+              "description": "User status age"
+            },
+            "username": {
+              "type":"string",
+              "description": "User name"
+            },
+            "avatarUrl": {
+              "type": "string",
+              "description": "User photo (шлях до фото юзера)"
             }
           }
         },
         "example": [
-          { "token": "asf2d@!fS", "email": "asd@mail.com", "subscription": "starter"}
+          { "token": "asf2d@!fS", "email": "asd@mail.com", "username": "Johny", "isAdult": "True | False", "avatarUrl": "/user/photo" }
         ]
       },
       "userCurrentResponse": {
@@ -568,49 +1179,73 @@
         "items": {
           "type": "object",
           "properties": {
+            "token": {
+              "type": "string",
+              "description": "User token"
+            },
             "email": {
               "type": "string",
               "description": "User email",
               "format": "email"
             },
-            "subscription": {
-                "type": "string",
-                "description": "User status (starter | pro | business)",
-                "example": "starter"
+            "isAdult": {
+              "type": "boolean",
+              "description": "User status age"
+            },
+            "username": {
+              "type":"string",
+              "description": "User name"
+            },
+            "avatarUrl": {
+              "type": "string",
+              "description": "User photo (шлях до фото юзера)"
             }
+          }
+        },
+        "example": [
+          { "token": "asf2d@!fS", "email": "asd@mail.com", "username": "Johny", "isAdult": "True | False", "avatarUrl": "/user/photo" }
+        ]
+      },
+      "userUpdateSchemaFormData": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": " New user name",
+            "example": "John"
+            },
+          "avatarUrl": {
+            "type": "string",
+            "description": "шлях до фото",
+            "example": "/user/photo"
           }
         }
       },
       "userUpdateSchema": {
         "type":"object",
           "properties": {
-            "email": {
+            "username": {
               "type": "string",
-              "description": "User email",
-              "format": "email"
-            },
-            "subscription": {
-                "type": "string",
-                "description": "User status (starter | pro | business)",
-                "example": "business"
+              "description": "New user name",
+              "example": "John"
             }
-          }
+          }  
       },
       "userUpdateResponse": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "email": {
+            "username": {
               "type": "string",
-              "description": "Email updated",
-              "format": "email"
+              "description": "New user name",
+              "example": "John"
             },
-            "subscription": {
-              "type": "string",
-              "description": "User status updated",
-              "example": "business"
-            }
+            "avatarUrl": {
+            "type": "string",
+            "description": "шлях до фото",
+            "example": "/user/photo"
+          }
           }
         }
       },
@@ -667,18 +1302,28 @@
     },
     "filterCategoriesResponse": {
       "type":"array",
-      "description": "Ordinary Drink, Cocktail, Shake, Other/Unknown",
       "items": {
-        "type":"array",
-        "example": "Ordinary Drink"
+        "type":"object",
+        "properties":{
+          "category": {
+            "type": "string",
+            "description": "Ordinary Drink, Cocktail, Shake, Other/Unknown",
+            "example": "Ordinary Drink | Cocktail | Shake"
+          }
+        }
       }
     },
     "filterGlassesResponse": {
       "type":"array",
-      "description": "Highball glass, Cocktail glass,Old-fashioned glass, Whiskey Glass",
       "items": {
-        "type":"array",
-        "example": "Highball glass"
+        "type":"object",
+        "properties":{
+          "glass": {
+            "type": "string",
+            "description": "Highball glass, Cocktail glass,Old-fashioned glass, Whiskey Glass",
+            "example": "Highball glass | Cocktail glass | Old-fashioned glass"
+          }
+        }
       }
     }
     },
