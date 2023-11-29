@@ -1,106 +1,314 @@
 <!-- @format -->
 
-# Drink-master-project-backend
+## Drink Master Project Backend
 
-дотсупные запросы:
+## BASE_URL=https://drink-master-project.onrender.com
 
-1. https://drink-master-project.onrender.com/api/auth/users/signup - запрост .post, тело
-   {
-   "username": "",
-   "email": "",
-   "password": ""
-   "birthdate": "ГГ-ММ-ДД" -------------- пример: "1990-03-20"
-   }
-   (в этом случае аватарка у пользователя будет дефолтная)
+### Overview
 
-2. https://drink-master-project.onrender.com/api/auth/users/signup - запрос .post в формате form-data, тело
-   {
-   username
-   email
-   password
-   avatar -- выбранный вами файл до 5мб
-   "birthdate": "ГГ-ММ-ДД" -------------- пример: "1990-03-20"
-   }
-   (в этом случае аватарка у пользователя будет выбранная вами но на запрос уходит примерно 10 секунд, наверное это зависит от скорости загрузки картинки от пользователю к серверу render.com)
+The Drink Master Project Backend serves as the server-side component for the Drink Master web application. It provides a RESTful API to manage user authentication, favorite drinks, user-created drinks, filters, and more.
 
-3. https://drink-master-project.onrender.com/api/auth/users/login - запрос .post c email и password, тело ответа:
-   {
-   "token": "...",
-   "username": "...",
-   "email": "...",
-   "isAdult": Boolean,
-   "avatarUrl": "..."
-   }
+### API Endpoints
 
-4. https://drink-master-project.onrender.com/api/auth/users/logout - запрос .post с вашим токеном в авторизации, ответ - успешный 204 статус без тела ответа
+1. **User Signup**
 
-5. https://drink-master-project.onrender.com/api/auth/users/current - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус с телом
-   {
-   "token": "...",
-   "username": "...",
-   "email": "...",
-   "isAdult": Boolean,
-   "avatarUrl": "..."
-   }
+   - **Endpoint:** `POST /api/auth/users/signup`
+   - **Description:** Register a new user.
+   - **Request Body:**
+     ```json
+     {
+       "username": "",
+       "email": "",
+       "password": "",
+       "birthdate": "YYYY-MM-DD"
+     }
+     ```
+   - **Response:** User object with default avatar.
 
-6. https://drink-master-project.onrender.com/api/auth/users/update - запрос .patch с вашим токеном в авторизации новым username, файлом аватарки или username + файл аватарки одновременно в формате form-data, ответ - успешный 200 статус с новым расположением аватарки и username
+2. **User Signup with Avatar**
 
-7. https://drink-master-project.onrender.com/api/filters/ingredients - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус со списком ингридиентов
+   - **Endpoint:** `POST /api/auth/users/signup`
+   - **Description:** Register a new user with a custom avatar.
+   - **Request Body:** Form data with fields:
+     - `username`
+     - `email`
+     - `password`
+     - `avatar` (file, up to 5MB)
+     - `birthdate`: "YYYY-MM-DD"
+   - **Response:** User object with the selected avatar.
 
-8. https://drink-master-project.onrender.com/api/filters/categories - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус с массивом всех категорий в алфавитном порядке
+3. **User Login**
 
-9. https://drink-master-project.onrender.com/api/filters/glasses - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус с массивом всех стаканов в алфавитном порядке
+   - **Endpoint:** `POST /api/auth/users/login`
+   - **Description:** Log in an existing user.
+   - **Request Body:**
+     ```json
+     {
+       "email": "",
+       "password": ""
+     }
+     ```
+   - **Response:** User token, username, email, age status, and avatar URL.
 
-10. https://drink-master-project.onrender.com/api/drinks/cocktails/main?category=Other/Unknown,Beer,Cocoa - запрос .get с вашим токеном в авторизации, категорией и возможностью пагинации: page, limit(по дефолту gape=1&limit=10), ответ - успешный 200 статус со списком коктейлей по выбранным категориям в зависимости от совершеннолетия позьзователя
+4. **User Logout**
 
-11. https://drink-master-project.onrender.com/api/drinks/popular?top=2 - запрос .get с вашим токеном в авторизации и возможностью выбора количества наипопулярнейших коктейлей, ответ - успешный 200 статус со списком коктейлей перечисленных по убыванию и в зависимости от совершеннолетия позьзователя
+- **Endpoint:** `POST /api/auth/users/logout`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Log out the current user.
+- **Response:** 204 No Content.
 
-12. https://drink-master-project.onrender.com/api/drinks/favorite/add - запрос .post с вашим токеном в авторизации и "drinkId": "..." в теле запроса, ответ - успешный 201 статус с телом
-    {
-    "message": "Drink has been added to favorites"
-    }
+5. **Get Current User**
 
-13. https://drink-master-project.onrender.com/api/drinks/favorite/remove/655d6d516c62290dfa2ac012 - (655d6d516c62290dfa2ac012 - это id коктейля, который пользователь добавил в избранное ранее) - запрос .delete с вашим токеном в авторизации, ответ - успешный 204 статус
+- **Endpoint:** `GET /api/auth/users/current`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get details of the currently logged-in user.
+- **Response:** User details.
 
-14. https://drink-master-project.onrender.com/api/drinks/search?page=1&limit=5&category=Shake&keyword=Just a Moonmint&ingredientId=64aebb7f82d96cc69e0eb4d7 - запрос .get с вашим токеном в авторизации и параметрами запроса в виде: {
-    page
-    limit
-    category
-    keyword -------- это ключевое слово в названии коктейля (drink) или в его описании (description)
-    ingredientId ------------ это айди ингридиента
-    }, ответ - успешный 200 статус с коктейлями, удовлетворяющими параметры запроса. Параметры запроса не обязательны для заполнения, если их не будет то ответ будет дефолтным - это 10 коктейлей в ответе с учётом совершеннолетия пользователя
+6. **Update User Profile**
 
-15. https://drink-master-project.onrender.com/api/drinks/favorite - запрос .get с вашим токеном и возможностью пагинации, ответ - успешный 200 статус с коктейлями пользователя в избранном.
+- **Endpoint:** `PATCH /api/auth/users/update`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Update user profile, including username and/or avatar.
+- **Request Body:** Form data with fields:
+  - `username` (optional)
+  - `avatar` (optional, file)
+- **Response:** Updated user details.
 
-16. https://drink-master-project.onrender.com/api/drinks/639b6de9ff77d221f190c563 - запрос .get с вашим токеном и айди коктейля в параметрах вызова, ответ - успешный 200 статус с коктейлем и находится ли он в избранных.
+7. **Get Ingredients**
 
-17. https://drink-master-project.onrender.com/api/drinks/own/add - запрос .post с вашим токеном и телом запроса в формате form-data первый ключ которого называется drinkPhoto и является файлом. Пример запроса:
-    {
-    "drink": "...",
-    "category": "одна из категорий",
-    "description": "...",
-    "instructions": "...",
-    "glass": "один из видов стаканов",
-    "alcoholic": "Non alcoholic", -------- или "Alcoholic"
-    "ingredients": [
-    {
-    "title": "название индигридиента",
-    "ingredientId": "айди ингридиента"
-    },
-    {
-    "title": "название индигридиента",
-    "ingredientId": "айди ингридиента"
-    }]
-    }, ингридиент должен быть минимум 1 с названием и айди. Остальные возможные поля можно посмотреть в описании коктейлей, по дефолту они пустые. Несовершеннолетние пользователи не могут добавлять алкогольные напитки. Ответ - успешный 201 статус с созданным коктейлем.
+- **Endpoint:** `GET /api/filters/ingredients`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get a list of all available ingredients.
+- **Response:** List of ingredients.
 
-18. https://drink-master-project.onrender.com/api/drinks/own/remove/655d6d516c62290dfa2ac012 - (655d6d516c62290dfa2ac012 - это id коктейля, который пользователь добавил ранее) - запрос .delete с вашим токеном в авторизации, ответ - успешный 204 статус
+8. **Get Categories**
 
-19. https://drink-master-project.onrender.com/api/drinks/own - запрос .get с вашим токеном в авторизации, ответ - успешный 200 статус cо списком созданных пользователем коктейлей
+- **Endpoint:** `GET /api/filters/categories`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get an alphabetically ordered list of all categories.
+- **Response:** List of categories.
 
-20. https://drink-master-project.onrender.com/api/privacy/policy - запрос .get, ответ - успешный 200 статус c параграфами текста
+9. **Get Glasses**
 
-21. https://drink-master-project.onrender.com/api/privacy/public - запрос .get, ответ - успешный 200 статус c параграфами текста
+- **Endpoint:** `GET /api/filters/glasses`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get an alphabetically ordered list of all glasses.
+- **Response:** List of glasses.
 
-22. https://drink-master-project.onrender.com/api/auth/users/subscribe?email=migew56640@bustayes.com - запрос .get с вашим токеном в авторизации и имейлом в параметрах запроса, ответ - успешный 200 статус с сообщением "message": "Subscription email send success"
+10. ## Get Cocktails by Category
 
-23. https://drink-master-project.onrender.com/api/application - запрос .get, ответ - успешный 200 статус с сообщением "message": "Api started"
+- **Endpoint:** `GET /api/drinks/cocktails/main`
+- **Description:** Retrieve a list of cocktails categorized by the specified categories, with optional pagination.
+- **Parameters:**
+  - `page` (optional): Page number for pagination (default is 1).
+  - `limit` (optional): Number of items per page (default is 4).
+  - `category`: Comma-separated list of categories for filtering cocktails.
+- **Response:**
+  - Returns a list of cocktails categorized based on age-appropriate criteria.
+  - The response is organized by category, and each category includes a paginated list of cocktails.
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Notes:**
+  Ensure that at least one category is provided in the category parameter.
+  Pagination is supported with page and limit parameters.
+  The response includes age-appropriate cocktails based on the user's status (Alcoholic or Non-alcoholic).
+- **Example Request:**
+  ```http
+  GET /api/drinks/cocktails/main?category=Shake,Beer,Cocoa&page=1&limit=4
+  ```
+
+11. ## Get Popular Cocktails
+
+- **Endpoint:** `GET /api/drinks/popular?top={count}`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Retrieve a list of the top N popular cocktails.
+- **Parameters:**
+  - `top`: Number of popular cocktails to retrieve.
+- **Response:**
+  - Returns a list of popular cocktails based on the specified count.
+  - The response includes cocktails listed in descending order of popularity.
+
+12. **Add to Favorite Drinks**
+
+- **Endpoint:** `POST /api/drinks/favorite/add`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Add a drink to the user's favorites.
+- **Request Body:**
+  `json
+{
+  "drinkId": "..."
+}
+`
+- **Response:** Success message.
+
+13. **Remove from Favorite Drinks**
+
+- **Endpoint:** `DELETE /api/drinks/favorite/remove/{drinkId}`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Remove a drink from the user's favorites.
+- **Response:** 204 No Content.
+
+14. ## Search Cocktails
+
+- **Endpoint:** `GET /api/drinks/search`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Search for cocktails based on optional parameters.
+- **Parameters:**
+  - `page` (optional): The page number for pagination (default: 1).
+  - `limit` (optional): The number of cocktails per page (default: 10).
+  - `category` (optional): Filter cocktails by category.
+  - `keyword` (optional): Search term for matching cocktail names or descriptions.
+  - `ingredientId` (optional): Filter cocktails by a specific ingredient.
+- **Response:**
+  - Returns a list of matching cocktails based on the specified parameters.
+  - The response includes pagination details.
+- **Example Request:**
+  ```http
+  GET /api/drinks/search?page=1&limit=10&category=Shake&keyword=Just a Moonmint&ingredientId=64aebb7f82d96cc69e0eb4d7
+  ```
+
+15. **Get User's Favorite Drinks**
+
+- **Endpoint:** `GET /api/drinks/favorite`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get the user's favorite drinks with optional pagination.
+- **Response:** List of favorite drinks.
+
+16. **Get Drink Details by ID**
+
+- **Endpoint:** `GET /api/drinks/{drinkId}`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get details of a specific drink by ID.
+- **Response:** Drink details with favorite status.
+
+17. ## Add User-Created Drink
+
+- **Endpoint:** `POST /api/drinks/own/add`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Add a user-created drink to the platform.
+- **Request Body:**
+  - Form data with fields for drink details, including a drink photo.
+- **Fields:**
+  - `drink` (string): Name of the drink.
+  - `category` (string): Category of the drink.
+  - `description` (string): Description of the drink.
+  - `instructions` (string): Preparation instructions for the drink.
+  - `glass` (string): Type of glass to be used.
+  - `alcoholic` (string): Alcoholic content ("Alcoholic" or "Non alcoholic").
+  - `ingredients` (array): Array of ingredients, each containing `title` and `ingredientId`.
+  - `drinkPhoto` (file): Image file representing the drink.
+- **Response:**
+  - Details of the created drink.
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Example Request:**
+  ```http
+  POST /api/drinks/own/add
+  ```
+  Certainly! Here's the revised description for the "Add User-Created Drink" endpoint:
+
+markdown
+Copy code
+
+## Add User-Created Drink
+
+- **Endpoint:** `POST /api/drinks/own/add`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Add a user-created drink to the platform.
+- **Request Body:**
+  - Form data with fields for drink details, including a drink photo.
+- **Fields:**
+  - `drink` (string): Name of the drink.
+  - `category` (string): Category of the drink.
+  - `description` (string): Description of the drink.
+  - `instructions` (string): Preparation instructions for the drink.
+  - `glass` (string): Type of glass to be used.
+  - `alcoholic` (string): Alcoholic content ("Alcoholic" or "Non alcoholic").
+  - `ingredients` (array): Array of ingredients, each containing `title` and `ingredientId`.
+  - `drinkPhoto` (file): Image file representing the drink.
+- **Response:**
+  - Details of the created drink.
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Example Request:**
+  ```http
+  POST /api/drinks/own/add
+  Form Data:
+    drink: "Mocktail Delight"
+    category: "Mocktail"
+    description: "A refreshing non-alcoholic delight."
+    instructions: "Mix and stir, and your Mocktail Delight is ready!"
+    glass: "Highball Glass"
+    alcoholic: "Non alcoholic"
+    ingredients[0][title]: "Lemon Juice"
+    ingredients[0][ingredientId]: "64aebb7f82d96cc69e0eb4d5"
+    drinkPhoto: [image file]
+  ```
+- **Notes:**
+  The request should include a valid user token for authentication.
+  The response includes details of the newly created drink.
+  A user must provide essential details, including a drink photo, to add a drink.
+
+18. **Remove User-Created Drink**
+
+- **Endpoint:** `DELETE /api/drinks/own/remove/{drinkId}`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Remove a user-created drink.
+- **Response:** 204 No Content.
+
+19. **Get User's Own Drinks**
+
+- **Endpoint:** `GET /api/drinks/own`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Get drinks created by the user.
+- **Response:** List of user-created drinks.
+
+20. **Privacy Policy**
+
+- **Endpoint:** `GET /api/privacy/policy`
+- **Description:** Get privacy policy details.
+- **Response:** Privacy policy text.
+
+21. **Public offerings**
+
+- **Endpoint:** `GET /api/privacy/public`
+- **Description:** Get public offerings details.
+- **Response:** Public offerings text.
+
+22. **Subscribe to Newsletter**
+
+- **Endpoint:** `GET /api/auth/users/subscribe?email={email}`
+- **Authorization:**
+  - Requires a valid user token for authentication.
+- **Description:** Subscribe to the newsletter with the provided email.
+- **Response:** Success message.
+
+23. **Application Status**
+
+- **Endpoint:** `GET /api/application`
+- **Description:** Check the status of the API.
+- **Response:** Success message.
+
+### Usage
+
+- Ensure you have the necessary permissions and a valid token for protected routes.
+- For file uploads, use the `multipart/form-data` format.
+- Follow the provided request examples for accurate data submission.
+
+Feel free to explore the Drink Master Project Backend API and leverage its functionality for a delightful user experience in the Drink Master web application. Cheers! 🍹🎉

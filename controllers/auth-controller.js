@@ -51,11 +51,6 @@ const signup = async (req, res) => {
     });
     avatarUrl = url;
     await fs.unlink(req.file.path);
-
-    // const { path: oldPath, filename } = req.file;
-    // const newPath = path.join(avatarsPath, filename);
-    // await fs.rename(oldPath, newPath);
-    // avatarUrl = path.join("avatars", filename);
   } else {
     const options = {
       s: "200",
@@ -143,11 +138,6 @@ const updateUser = async (req, res) => {
     });
     updatedUser = { ...req.body, avatarUrl: url };
     await fs.unlink(req.file.path);
-
-    //  const { path: oldPath, filename } = req.file;
-    // const newPath = path.join(avatarsPath, filename);
-    // await fs.rename(oldPath, newPath);
-    // const avatarUrl = path.join("avatars", filename);
   } else {
     updatedUser = { ...req.body };
   }

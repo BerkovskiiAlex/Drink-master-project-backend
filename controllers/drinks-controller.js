@@ -181,11 +181,6 @@ const addDrink = async (req, res) => {
   });
   await fs.unlink(req.file.path);
 
-  // const { path: oldPath, filename } = req.file;
-  // const newPath = path.join(drinksPath, filename);
-  // await fs.rename(oldPath, newPath);
-  // const drinkUrl = path.join("drinkPhoto", filename);
-
   if (!isAdult && body.alcoholic === "Alcoholic") {
     throw HttpError(
       403,
