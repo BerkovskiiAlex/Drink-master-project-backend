@@ -6,7 +6,7 @@
 
 ### Overview
 
-The Drink Master Project Backend serves as the server-side component for the Drink Master web application. It provides a RESTful API to manage user authentication, favorite drinks, user-created drinks, filters, and more.
+The Drink Master Project Backend serves as the server-side component for the [Drink Master web application](https://drink-master-project.vercel.app/welcome). It provides a RESTful API to manage user authentication, favorite drinks, user-created drinks, filters, and more.
 
 ### API Endpoints
 
