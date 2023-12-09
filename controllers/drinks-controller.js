@@ -1,7 +1,6 @@
 /** @format */
 
 import fs from "fs/promises";
-import path from "path";
 
 import Drink from "../models/Drink.js";
 import Favorite from "../models/Favorite.js";
@@ -9,8 +8,6 @@ import Favorite from "../models/Favorite.js";
 import { HttpError, cloudinary } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
-
-const drinksPath = path.resolve("public", "drinkPhoto");
 
 const getMainPageDrinks = async (req, res) => {
   const { page = 1, limit = 4, category } = req.query;
@@ -217,14 +214,34 @@ const removeDrink = async (req, res) => {
 
 const getUsersDrinks = async (req, res) => {
   const { _id: owner } = req.user;
+  const { page = 1, limit = 10 } = req.query;
 
-  const result = await Drink.find({ owner });
+  if (page < 1 || limit < 1) {
+    throw HttpError(400, `page and limit must be equal to or greater than 1`);
+  }
+
+  const skip = (page - 1) * limit;
+
+  const totalUsersDrinks = await Drink.countDocuments({
+    owner: { $in: owner },
+  });
+
+  const result = await Drink.find({ owner }, "-createdAt -updatedAt", {
+    skip,
+    limit: parseInt(limit),
+  });
 
   if (!result) {
     throw HttpError(404, `User's drinks not found`);
   }
 
-  res.json(result);
+  res.json({
+    totalUsersDrinks: totalUsersDrinks,
+    totalPages: Math.ceil(totalUsersDrinks / parseInt(limit)),
+    currentPage: parseInt(page),
+    perPage: parseInt(limit),
+    data: result,
+  });
 };
 
 const addToFavorites = async (req, res) => {

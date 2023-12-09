@@ -217,36 +217,6 @@ The Drink Master Project Backend serves as the server-side component for the [Dr
 - **Example Request:**
   ```http
   POST /api/drinks/own/add
-  ```
-  Certainly! Here's the revised description for the "Add User-Created Drink" endpoint:
-
-markdown
-Copy code
-
-## Add User-Created Drink
-
-- **Endpoint:** `POST /api/drinks/own/add`
-- **Authorization:**
-  - Requires a valid user token for authentication.
-- **Description:** Add a user-created drink to the platform.
-- **Request Body:**
-  - Form data with fields for drink details, including a drink photo.
-- **Fields:**
-  - `drink` (string): Name of the drink.
-  - `category` (string): Category of the drink.
-  - `description` (string): Description of the drink.
-  - `instructions` (string): Preparation instructions for the drink.
-  - `glass` (string): Type of glass to be used.
-  - `alcoholic` (string): Alcoholic content ("Alcoholic" or "Non alcoholic").
-  - `ingredients` (array): Array of ingredients, each containing `title` and `ingredientId`.
-  - `drinkPhoto` (file): Image file representing the drink.
-- **Response:**
-  - Details of the created drink.
-- **Authorization:**
-  - Requires a valid user token for authentication.
-- **Example Request:**
-  ```http
-  POST /api/drinks/own/add
   Form Data:
     drink: "Mocktail Delight"
     category: "Mocktail"
@@ -276,7 +246,10 @@ Copy code
 - **Endpoint:** `GET /api/drinks/own`
 - **Authorization:**
   - Requires a valid user token for authentication.
-- **Description:** Get drinks created by the user.
+  - **Parameters:**
+  - `page` (optional): Page number for pagination (default is 1).
+  - `limit` (optional): Number of items per page (default is 10).
+- **Description:** Get drinks created by the user, with optional pagination.
 - **Response:** List of user-created drinks.
 
 20. **Privacy Policy**
